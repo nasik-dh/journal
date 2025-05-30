@@ -628,13 +628,7 @@
                         >
                             Read More <i class="fas fa-arrow-right ml-1"></i>
                         </button>
-                        <button 
-                            onclick="downloadPDF(${article.id})" 
-                            class="text-gray-600 hover:text-gray-800 transition-colors"
-                            title="Download PDF"
-                        >
-                            <i class="fas fa-download"></i>
-                        </button>
+                        
                     </div>
                 </div>
             `;
@@ -678,13 +672,7 @@
                         >
                             Read More <i class="fas fa-arrow-right ml-1"></i>
                         </button>
-                        <button 
-                            onclick="downloadPDF(${article.id})" 
-                            class="text-gray-600 hover:text-gray-800 transition-colors"
-                            title="Download PDF"
-                        >
-                            <i class="fas fa-download"></i>
-                        </button>
+                        
                     </div>
                 </div>
             `;
@@ -819,12 +807,7 @@
                         <p class="text-sm text-blue-800">${article.authors.split(',')[0]} . (${article.date}). ${article.title}. <em>${article.journal}</em>, ${article.volume}, ${article.pages}. ${article.doi}</p>
                     </div>
                     <div class="mb-6">
-                        <button 
-                            onclick="downloadPDF(${article.id})" 
-                            class="bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors mr-3"
-                        >
-                            <i class="fas fa-download mr-2"></i>Download PDF
-                        </button>
+                        
                         <button 
                             onclick="shareArticle(${article.id})" 
                             class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
