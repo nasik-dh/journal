@@ -6,7 +6,8 @@
     <meta name="description" content="Academic Research Journal - Peer-reviewed scholarly publications across multiple disciplines">
     <meta name="keywords" content="academic journal, research papers, scholarly articles, peer review, scientific publications">
     <meta name="author" content="Academic Research Journal">
-    <title>Academic Research Journal - Scholarly Publications</title>
+    <title>Islamic Insight</title>
+     <link rel="icon" type="image/png" href="logo1.png">
     
     <!-- CSS Libraries -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
@@ -144,6 +145,68 @@
             object-fit: cover;
             border-radius: 8px 8px 0 0;
         }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo-image {
+            height: 40px;
+            width: auto;
+        }
+        
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 0.5rem;
+            z-index: 1000;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        .dropdown-content a {
+            color: #374151;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.2s;
+        }
+        
+        .dropdown-content a:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .dropdown-content a:first-child {
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+        
+        .dropdown-content a:last-child {
+            border-radius: 0 0 0.5rem 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .logo-image {
+                height: 32px;
+            }
+            
+            .logo-text {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 
@@ -154,10 +217,12 @@
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <h1 class="text-xl font-bold text-blue-900 academic-title">
-                            <i class="fas fa-graduation-cap mr-2"></i>
-                           ISLAMIC INSIGHT
-                        </h1>
+                        <div class="logo-container">
+                            <img src="https://dqdhiu.netlify.app/logo.jpg" alt="Islamic Insight Logo" class="logo-image">
+                            <h1 class="logo-text text-xl font-bold text-black-900 academic-title">
+                                ISLAMIC INSIGHT
+                            </h1>
+                        </div>
                     </div>
                 </div>
                 
