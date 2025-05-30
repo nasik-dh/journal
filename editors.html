@@ -87,6 +87,23 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
         
+        .section-title {
+            font-family: 'Crimson Text', serif;
+            position: relative;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            width: 60px;
+            background-color: #4b5563;
+        }
+        
         @media (max-width: 768px) {
             .logo-image {
                 height: 32px;
@@ -94,6 +111,10 @@
             
             .logo-text {
                 font-size: 1rem;
+            }
+            
+            .section-title::after {
+                width: 40px;
             }
         }
     </style>
@@ -127,7 +148,6 @@
                             </a>
                             <div class="dropdown-content">
                                 <a href="#editorial-team">Editorial Team</a>
-                               
                             </div>
                         </div>
                     </div>
@@ -150,7 +170,6 @@
                 <a href="all-issues.html" class="block px-3 py-2 text-gray-700 hover:text-blue-900 transition-colors">All Issues</a>
                 <a href="#contact" class="block px-3 py-2 text-gray-700 hover:text-blue-900 transition-colors">Contact</a>
                 <a href="#editorial-team" class="block px-3 py-2 pl-6 text-gray-600 hover:text-blue-900 transition-colors">Editorial Team</a>
-               
             </div>
         </div>
     </nav>
@@ -162,251 +181,254 @@
                 <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold academic-title text-gray-900 mb-6">
                     Editorial Team
                 </h2>
-                
             </div>
             
-            
-            <!-- Advisory Board -->
+            <!-- Editor-in-Chief Section -->
             <div class="mb-16">
-              
+                <h3 class="text-2xl font-bold text-gray-800 section-title">Editor-in-Chief</h3>
+                <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
+                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-black-600 text-base mb-2 font-semibold">Prof. Bahauddeen Muhammed Nadwi</p>
+                                <p class="text-gray-700 text-sm">Vice Chancellor, Darul Huda Islamic University</p>
+                                <p class="text-gray-700 text-sm">vc@dhiu.in</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Associate Editor Section -->
+            <div class="mb-16">
+                <h3 class="text-2xl font-bold text-gray-800 section-title">Associate Editor</h3>
+                <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
+                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-black-600 text-base mb-2 font-semibold">Dr. Muhammed Suhail Hidaya al-Hudawi</p>
+                                <p class="text-gray-700 text-sm">Dean, Kulliyyah of Qur'an and Sunnah, Darul Huda Islamic University</p>
+                                <p class="text-gray-700 text-sm">suhailhidaya@dhiu.in</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- International Advisory Board Section -->
+            <div class="mb-16">
+                <h3 class="text-2xl font-bold text-gray-800 section-title">International Advisory Board</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-black-600 text-base mb-2 font-semibold">Dr. Ebrahim Moosa</p>
+                                <p class="text-gray-700 text-sm">Professor of Islamic Studies, Keough School of Global Affairs, University of Notre Dame, 1010 Jenkins Nanovic Halls, Notre Dame, Indiana 46556-5677, USA</p>
+                                <p class="text-gray-700 text-sm">emoosa1@nd.edu</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-black-600 text-base mb-2 font-semibold">Dr. Francis Robinson</p>
+                                <p class="text-gray-700 text-sm">Professor, Dept. of History, Royal Holloway, University of London, Egham Hill, Egham TW20 0EX, England</p>
+                                <p class="text-gray-700 text-sm">F.Robinson@rhul.ac.uk</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-black-600 text-base mb-2 font-semibold">Dr. Ibrahim Zein</p>
+                                <p class="text-gray-700 text-sm">Professor, College of Islamic Studies, Hamad Bin Khalifah University, Qatar Foundation, Qatar</p>
+                                <p class="text-gray-700 text-sm">izain@hbku.edu.qa</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-black-600 text-base mb-2 font-semibold">Dr. Malik Badri</p>
+                                <p class="text-gray-700 text-sm">Professor, Department of Psychology, Faculty of Education, Istanbul Zaim University, Turkey</p>
+                                <p class="text-gray-700 text-sm">malik.mohammed@izu.edu.tr</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-black-600 text-base mb-2 font-semibold">Dr. Mohamed El-Tahir El-Mesawi</p>
+                                <p class="text-gray-700 text-sm">Professor, Dept. of Fiqh and Usul al-Fiqh, International Islamic University Malaysia, Kuala Lumpur, Malaysia</p>
+                                <p class="text-gray-700 text-sm">mmesawi@iium.edu.my</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-black-600 text-base mb-2 font-semibold">Dr. Osman Bakar</p>
+                                <p class="text-gray-700 text-sm">Distinguished Professor of Islamic Civilisation and Contemporary Issues, Sultan Omar 'Ali Saifuddien Centre for Islamic Studies (SOASCIS), Universiti Brunei Darussalam, Brunei</p>
+                                <p class="text-gray-700 text-sm">osman.bakar@ubd.edu.bn</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-black-600 text-base mb-2 font-semibold">Dr. Stephen F. Dale</p>
+                                <p class="text-gray-700 text-sm">Professor, Dept. of History, Ohio State University, 106 Dulles Hall, 230 Annie & John Glenn Avenue, Columbus OH, 43210-1367, USA</p>
+                                <p class="text-gray-700 text-sm">dale.1@osu.edu</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-black-600 text-base mb-2 font-semibold">Dr. Wael B. Hallaq</p>
+                                <p class="text-gray-700 text-sm">Professor in the Humanities, Columbia University, 401 Knox Hall, MC9628606 West 122nd St, New York, NY 10027, USA</p>
+                                <p class="text-gray-700 text-sm">wh2223@columbia.edu</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-black-600 text-base mb-2 font-semibold">Dr. Abdul Kabir Hussain Solihu</p>
+                                <p class="text-gray-700 text-sm">Professor, Department of Religions, History and Heritage Studies, Kwara State University</p>
+                                <p class="text-gray-700 text-sm">abdulkabir.solihu@kwasu.edu.ng</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-black-600 text-base mb-2 font-semibold">Dr. Anis Malik Thoha</p>
+                                <p class="text-gray-700 text-sm">Rector, UNISSULA University, Jalan Raya Kaligawe, Km 4 Semarang, 50112 Jawa Tengah, Indonesia</p>
+                                <p class="text-gray-700 text-sm">anismalik.t@unissula.ac.id</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-black-600 text-base mb-2 font-semibold">Dr. Bilal Kuşpınar</p>
+                                <p class="text-gray-700 text-sm">Professor, Department of Philosophy, Necmettin Erbakan University, SBBF, Konya, Turkey</p>
+                                <p class="text-gray-700 text-sm">bkuspinar@konya.edu.tr</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Editorial Board Section -->
+            <div class="mb-16">
+                <h3 class="text-2xl font-bold text-gray-800 section-title">Editorial Board</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-black-600 text-base mb-2 font-semibold">Dr. Shafeeq Hussain</p>
+                                <p class="text-gray-700 text-sm">Asst. Professor, Yanbu University College, Royal Commission at Yanbu, P.O. Box 30436, Saudi Arabia</p>
+                                <p class="text-gray-700 text-sm">hussains@rcyci.edu.sa</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-black-600 text-base mb-2 font-semibold">Dr. Faisal K.P</p>
+                                <p class="text-gray-700 text-sm">Asst. Professor, Aligarh Muslim University Malappuram Centre, Chelamala, Anamangad, India</p>
+                                <p class="text-gray-700 text-sm">faisal.mpm@amu.ac.in</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-black-600 text-base mb-2 font-semibold">Dr. Muneer A.K</p>
+                                <p class="text-gray-700 text-sm">Asst. Professor, Dept. of English, Aligarh Muslim University, Aligarh, UP-202002, India</p>
+                                <p class="text-gray-700 text-sm">akuzhiyan.en@amu.ac.in</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Language Editor Section -->
+            <div class="mb-16">
+                <h3 class="text-2xl font-bold text-gray-800 section-title">Language Editor</h3>
+                <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
+                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-black-600 text-base mb-2 font-semibold">Kunnathil Muhammed Aslam</p>
+                                <p class="text-gray-700 text-sm">Asst. Professor, Department of English, Maulana Azad National Urdu University, Hyderabad, India</p>
+                                <p class="text-gray-700 text-sm">kmaslu@manuu.edu.in</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Book Review Editors Section -->
+            <div class="mb-16">
+                <h3 class="text-2xl font-bold text-gray-800 section-title">Book Review Editors</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
                         <div class="flex items-start space-x-4">
                             <div class="flex-shrink-0">
-                                
                             </div>
                             <div class="flex-1">
-                                <h4 class="text-lg font-semibold text-gray-900 mb-1">Editor-in-Chief:</h4>
-                                <p class="text-black-600 text-sm mb-2">Prof. Bahauddeen Muhammed Nadwi</p>
-                                <p class="text-gray-700 text-sm">Vice Chancellor, Darul Huda Islamic University</p>
-                                 <p class="text-gray-700 text-sm">vc@dhiu.in</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                
-                            </div>
-                            <div class="flex-1">
-                                <h4 class="text-lg font-semibold text-gray-900 mb-1">Associate Editor:</h4>
-                                <p class="text-black-600 text-sm mb-2">Dr. Muhammed Suhail Hidaya al-Hudawi</p>
-                                <p class="text-gray-700 text-sm">Dean, Kulliyyah of Qur’an and Sunnah,Darul Huda Islamic University</p>
-                                 <p class="text-gray-700 text-sm">suhailhidaya@dhiu.in</p>
-                            </div>
-                        </div>
-                    </div>
-                
-           
-                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                
-                            </div>
-                            <div class="flex-1">
-                                <h4 class="text-lg font-semibold text-gray-900 mb-1">International Advisory Board:</h4>
-                                <p class="text-black-600 text-sm mb-2">Dr. Ebrahim Moosa</p>
-                                <p class="text-gray-700 text-sm">Professor of Islamic Studies, Keough School of Global Affairs, University of Notre Dame, 1010 Jenkins Nanovic Halls, Notre Dame, Indiana 46556-5677, USA,</p>
-                                 <p class="text-gray-700 text-sm">emoosa1@nd.edu</p>
-                            </div>
-                        </div>
-                    </div>
-
-                     <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                
-                            </div>
-                            <div class="flex-1">
-                                
-                                <p class="text-black-600 text-sm mb-2">Dr. Francis Robinson</p>
-                                <p class="text-gray-700 text-sm">Professor, Dept. of History, Royal Holloway, University of London,  Egham Hill, Egham TW20 0EX, England,</p>
-                                 <p class="text-gray-700 text-sm">F.Robinson@rhul.ac.uk </p>
-                            </div>
-                        </div>
-                    </div>
-
-                     <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                
-                            </div>
-                            <div class="flex-1">
-                               
-                                <p class="text-black-600 text-sm mb-2">Dr. Ibrahim Zein</p>
-                                <p class="text-gray-700 text-sm">Professor, College of Islamic Studies, Hamad Bin Khalifah University, Qatar Foundation,Qatar</p>
-                                 <p class="text-gray-700 text-sm">izain@hbku.edu.qa</p>
-                            </div>
-                        </div>
-                    </div>
-
-                   <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                
-                            </div>
-                            <div class="flex-1">
-                               
-                                <p class="text-black-600 text-sm mb-2">Dr. Malik Badri </p>
-                                <p class="text-gray-700 text-sm">Professor, Department of Psychology, Faculty of Education, Istanbul Zaim University, Turkey</p>
-                                 <p class="text-gray-700 text-sm">malik.mohammed@izu.edu.tr</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                
-                            </div>
-                            <div class="flex-1">
-                               
-                                <p class="text-black-600 text-sm mb-2">Dr. Mohamed El-Tahir El-Mesawi</p>
-                                <p class="text-gray-700 text-sm">Professor, Dept. of Fiqh and Usul al-Fiqh, International Islamic University Malaysia, Kuala Lumpur, Malaysia</p>
-                                 <p class="text-gray-700 text-sm">mmesawi@iium.edu.my</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                
-                            </div>
-                            <div class="flex-1">
-                               
-                                <p class="text-black-600 text-sm mb-2">Dr. Osman Bakar</p>
-                                <p class="text-gray-700 text-sm">Distinguished Professor of Islamic Civilisation and Contemporary Issues, Sultan Omar 'Ali Saifuddien Centre for Islamic Studies (SOASCIS), Universiti Brunei Darussalam, Brunei</p>
-                                 <p class="text-gray-700 text-sm">osman.bakar@ubd.edu.bn</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                
-                            </div>
-                            <div class="flex-1">
-                               
-                                <p class="text-black-600 text-sm mb-2">Dr. Stephen F. Dale</p>
-                                <p class="text-gray-700 text-sm">Professor, Dept. of History, Ohio State University, 106 Dulles Hall, 230 Annie & John Glenn Avenue, Columbus OH, 43210-1367, USA</p>
-                                 <p class="text-gray-700 text-sm">dale.1@osu.edu</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                
-                            </div>
-                            <div class="flex-1">
-                               
-                                <p class="text-black-600 text-sm mb-2">Dr. Wael B. Hallaq</p>
-                                <p class="text-gray-700 text-sm">Professor in the Humanities, Columbia University, 401 Knox Hall, MC9628606 West 122nd St, New York, NY 10027, USA</p>
-                                 <p class="text-gray-700 text-sm"> wh2223@columbia.edu</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                
-                            </div>
-                            <div class="flex-1">
-                               
-                                <p class="text-black-600 text-sm mb-2">Dr. Abdul Kabir Hussain Solihu</p>
-                                <p class="text-gray-700 text-sm">Professor, Department of Religions, History and Heritage Studies, Kwara State University</p>
-                                 <p class="text-gray-700 text-sm">abdulkabir.solihu@kwasu.edu.ng</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                
-                            </div>
-                            <div class="flex-1">
-                               
-                                <p class="text-black-600 text-sm mb-2">Dr. Anis Malik Thoha</p>
-                                <p class="text-gray-700 text-sm">Rector, UNISSULA University, Jalan Raya Kaligawe, Km 4 Semarang, 50112 Jawa Tengah, Indonesia</p>
-                                 <p class="text-gray-700 text-sm">anismalik.t@unissula.ac.id</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                
-                            </div>
-                            <div class="flex-1">
-                               
-                                <p class="text-black-600 text-sm mb-2">Dr. Bilal Kuşpınar </p>
-                                <p class="text-gray-700 text-sm">Professor, Department of Philosophy, Necmettin Erbakan University, SBBF, Konya, Turkey</p>
-                                 <p class="text-gray-700 text-sm">bkuspinar@konya.edu.tr</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                
-                            </div>
-                            <div class="flex-1">
-                               <h4 class="text-lg font-semibold text-gray-900 mb-1">Editorial Board:</h4>
-                                <p class="text-black-600 text-sm mb-2">Dr. Shafeeq Hussain</p>
-                                <p class="text-gray-700 text-sm">Asst. Professor, Yanbu University College, Royal Commission at Yanbu, P.O. Box 30436, Saudi Arabia</p>
-                                 <p class="text-gray-700 text-sm">hussains@rcyci.edu.sa</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                
-                            </div>
-                            <div class="flex-1">
-                               
-                                <p class="text-black-600 text-sm mb-2">Dr. Faisal K.P</p>
-                                <p class="text-gray-700 text-sm">Asst. Professor, Aligarh Muslim University Malappuram Centre, Chelamala, Anamangad, India</p>
-                                 <p class="text-gray-700 text-sm">faisal.mpm@amu.ac.in</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                
-                            </div>
-                            <div class="flex-1">
-                               
-                                <p class="text-black-600 text-sm mb-2">Dr. Muneer A.K</p>
-                                <p class="text-gray-700 text-sm">Asst. Professor, Dept. of English, Aligarh Muslim University, Aligarh, UP-202002, India</p>
-                                 <p class="text-gray-700 text-sm">akuzhiyan.en@amu.ac.in</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                
-                            </div>
-                            <div class="flex-1">
-                               <h4 class="text-lg font-semibold text-gray-900 mb-1">Language Editor:</h4>
-                                <p class="text-black-600 text-sm mb-2">Kunnathil Muhammed Aslam</p>
-                                <p class="text-gray-700 text-sm">Asst. Professor, Department of English, Maulana Azad National Urdu University, Hyderabad. India</p>
-                                 <p class="text-gray-700 text-sm">kmaslu@manuu.edu.in</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                
-                            </div>
-                            <div class="flex-1">
-                               <h4 class="text-lg font-semibold text-gray-900 mb-1">Book Review Editors:</h4>
-                                <p class="text-black-600 text-sm mb-2">Abdul Jaleel P.K.M</p>
+                                <p class="text-black-600 text-base mb-2 font-semibold">Abdul Jaleel P.K.M</p>
                                 <p class="text-gray-700 text-sm">Research Associate, Asia Research Institute, National University of Singapore</p>
-                                 <p class="text-gray-700 text-sm">pkmjali@gmail.com</p>
+                                <p class="text-gray-700 text-sm">pkmjali@gmail.com</p>
                             </div>
                         </div>
                     </div>
@@ -414,68 +436,55 @@
                     <div class="editorial-card bg-gray-50 rounded-lg shadow-sm border border-gray-200 p-6">
                         <div class="flex items-start space-x-4">
                             <div class="flex-shrink-0">
-                                
                             </div>
                             <div class="flex-1">
-                               
-                                <p class="text-black-600 text-sm mb-2">Muhamed Riyaz Chenganakkattil</p>
+                                <p class="text-black-600 text-base mb-2 font-semibold">Muhamed Riyaz Chenganakkattil</p>
                                 <p class="text-gray-700 text-sm">Doctoral Researcher, Department of Humanities and Social Sciences, Indian Institute of Technology Delhi</p>
-                                 <p class="text-gray-700 text-sm">riyazyamish@hss.iitd.ac.in</p>
+                                <p class="text-gray-700 text-sm">riyazyamish@hss.iitd.ac.in</p>
                             </div>
                         </div>
                     </div>
-                    
                 </div>
             </div>
 
-             <!-- Contact Section -->
-    <section id="contact" class="py-12 sm:py-16 lg:py-20 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold academic-title text-gray-900 mb-4">
-                   Contact Us
-                </h2>
-                
-            </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                <div>
-                   
+            <!-- Contact Section -->
+            <section id="contact" class="py-12 sm:py-16 lg:py-20 bg-gray-50 rounded-lg">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-12">
+                        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold academic-title text-gray-900 mb-4">
+                           Contact Us
+                        </h2>
+                    </div>
                     
-                    <div class="space-y-4">
-                        <div class="flex items-start">
-                           
-                            <div>
-                                <p class="font-medium text-gray-900">Address</p>
-                                <p class="text-gray-600">Editor, Islamic Insight Journal of Islamic Studies, Darul Huda Islamic
-                    University, Chemmad, P.B.NO. 3, Tirurangadi (PO), Malappuram (Dt.),
-                    676306 (PIN), Kerala, India.</p>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <div>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div>
+                                        <p class="font-medium text-gray-900">Address</p>
+                                        <p class="text-gray-600">Editor, Islamic Insight Journal of Islamic Studies, Darul Huda Islamic
+                            University, Chemmad, P.B.NO. 3, Tirurangadi (PO), Malappuram (Dt.),
+                            676306 (PIN), Kerala, India.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div>
+                                        <p class="font-medium text-gray-900">Email</p>
+                                        <p class="text-gray-600">islamicinsight@dhiu.in</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div>
+                                        <p class="font-medium text-gray-900">Website</p>
+                                        <p class="text-gray-600">www.islamicinsight.in</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="flex items-start">
-                           
-                            <div>
-                                <p class="font-medium text-gray-900">Email</p>
-                                <p class="text-gray-600">islamicinsight@dhiu.in</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start">
-                            
-                            <div>
-                                <p class="font-medium text-gray-900">Website</p>
-                                <p class="text-gray-600">www.islamicinsight.in</p>
-                            </div>
-                        </div>
-                        
-                        
                     </div>
                 </div>
-                
-                
-            </div>
-        </div>
-    </section>
+            </section>
         </div>
     </section>
 
