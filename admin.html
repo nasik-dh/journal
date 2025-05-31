@@ -3,14 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Islamic Insight - Admin Panel</title>
+    <title>Islamic Insight Journal - Admin Panel</title>
+    
+    <!-- CSS Libraries -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="logo1.png">
+    
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@6.3.1/tinymce.min.js"></script>
+    
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a202c;
+            background-color: #f7fafc;
         }
         
         .academic-title {
@@ -18,71 +28,109 @@
         }
         
         .sidebar {
-            height: calc(100vh - 64px);
+            width: 250px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-collapsed {
+            width: 80px;
         }
         
         .content-area {
-            height: calc(100vh - 64px);
-            overflow-y: auto;
+            transition: all 0.3s;
         }
         
-        .preview-frame {
+        .main-content {
+            min-height: calc(100vh - 64px);
+        }
+        
+        .form-input, .form-textarea, .form-select {
             width: 100%;
+            padding: 0.5rem;
             border: 1px solid #e2e8f0;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
         
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.25);
         }
         
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            border-radius: 0.375rem;
+            transition: color 0.15s, background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
+            cursor: pointer;
         }
         
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e0;
-            border-radius: 4px;
+        .btn-primary {
+            color: #fff;
+            background-color: #4299e1;
+            border: 1px solid #4299e1;
         }
         
-        ::-webkit-scrollbar-thumb:hover {
-            background: #a0aec0;
+        .btn-primary:hover {
+            background-color: #3182ce;
+            border-color: #3182ce;
         }
         
-        /* Markdown editor styles */
-        .md-editor {
-            min-height: 200px;
-            max-height: 400px;
-            overflow-y: auto;
+        .btn-danger {
+            color: #fff;
+            background-color: #e53e3e;
+            border: 1px solid #e53e3e;
         }
         
-        .md-preview {
-            min-height: 200px;
-            max-height: 400px;
-            overflow-y: auto;
-            background-color: #f8f9fa;
+        .btn-danger:hover {
+            background-color: #c53030;
+            border-color: #c53030;
         }
         
-        /* Toast notification */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 16px;
-            border-radius: 8px;
-            z-index: 1000;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: opacity 0.5s ease-in-out;
+        .btn-secondary {
+            color: #4a5568;
+            background-color: #edf2f7;
+            border: 1px solid #edf2f7;
         }
         
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
+        .btn-secondary:hover {
+            background-color: #e2e8f0;
+            border-color: #e2e8f0;
         }
         
-        /* Badge styles */
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: 0.375rem;
+        }
+        
+        .alert-success {
+            color: #2f855a;
+            background-color: #f0fff4;
+            border-color: #c6f6d5;
+        }
+        
+        .alert-danger {
+            color: #c53030;
+            background-color: #fff5f5;
+            border-color: #fed7d7;
+        }
+        
+        .article-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .article-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
         .badge {
             display: inline-block;
             padding: 0.25rem 0.75rem;
@@ -99,1036 +147,1373 @@
         .badge-purple { background: #faf5ff; color: #6b46c1; }
         .badge-yellow { background: #fffaf0; color: #b7791f; }
         
-        .table-container {
-            max-height: calc(100vh - 300px);
-            overflow-y: auto;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table th, table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        table th {
+            font-weight: 600;
+            text-align: left;
+            background-color: #f7fafc;
+        }
+        
+        .pagination {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+        
+        .pagination li {
+            margin: 0 0.25rem;
+        }
+        
+        .pagination a {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            color: #4299e1;
+            text-decoration: none;
+        }
+        
+        .pagination a.active {
+            background-color: #4299e1;
+            color: #fff;
+            border-color: #4299e1;
+        }
+        
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 0.375rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Table responsive styles */
+        @media screen and (max-width: 768px) {
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                z-index: 40;
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .content-area {
+                margin-left: 0 !important;
+            }
         }
     </style>
 </head>
 
-<body class="bg-gray-50">
-    <!-- Header -->
-    <header class="bg-blue-900 text-white h-16">
-        <div class="flex items-center justify-between h-full px-6">
-            <div class="flex items-center">
-                <h1 class="text-xl font-bold academic-title">
-                    Islamic Insight <span class="ml-2 text-blue-200 text-sm">Admin Panel</span>
-                </h1>
-            </div>
-            <div class="flex items-center space-x-3">
-                <button id="save-all-btn" class="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
-                    <i class="fas fa-save mr-1"></i> Save Changes
-                </button>
-                <button id="export-btn" class="bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded-md text-sm">
-                    <i class="fas fa-file-export mr-1"></i> Export
-                </button>
-                <button id="import-btn" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1 rounded-md text-sm">
-                    <i class="fas fa-file-import mr-1"></i> Import
-                </button>
-                <a href="index.html" target="_blank" class="text-blue-200 hover:text-white ml-2">
-                    <i class="fas fa-external-link-alt"></i> View Site
-                </a>
+<body>
+    <div id="app">
+        <!-- Login Screen -->
+        <div id="login-screen" class="login-container hidden">
+            <h2 class="text-2xl font-bold mb-6 text-center academic-title">Islamic Insight Journal</h2>
+            <h3 class="text-xl mb-6 text-center">Admin Login</h3>
+            
+            <div id="login-alert" class="alert alert-danger hidden mb-4"></div>
+            
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label for="username" class="block mb-1">Username</label>
+                    <input type="text" id="username" class="form-input" required>
+                </div>
+                <div>
+                    <label for="password" class="block mb-1">Password</label>
+                    <input type="password" id="password" class="form-input" required>
+                </div>
+                <div class="flex justify-between items-center">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <button type="button" id="setup-admin" class="btn btn-secondary hidden">Set Up Admin</button>
+                </div>
+            </form>
+            
+            <div id="setup-form" class="hidden mt-6 pt-6 border-t">
+                <h4 class="text-lg mb-4">Create Admin Account</h4>
+                <form id="admin-setup-form" class="space-y-4">
+                    <div>
+                        <label for="new-username" class="block mb-1">Username</label>
+                        <input type="text" id="new-username" class="form-input" required>
+                    </div>
+                    <div>
+                        <label for="new-password" class="block mb-1">Password</label>
+                        <input type="password" id="new-password" class="form-input" required>
+                    </div>
+                    <div>
+                        <label for="confirm-password" class="block mb-1">Confirm Password</label>
+                        <input type="password" id="confirm-password" class="form-input" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </form>
             </div>
         </div>
-    </header>
 
-    <div class="flex h-full">
-        <!-- Sidebar -->
-        <aside class="w-64 bg-white border-r border-gray-200 sidebar">
-            <nav class="p-4">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">Manage Content</h2>
-                <ul class="space-y-1">
-                    <li>
-                        <a href="#" class="nav-link" data-view="dashboard" id="dashboard-link">
-                            <div class="flex items-center p-3 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-900">
-                                <i class="fas fa-tachometer-alt w-5"></i>
-                                <span class="ml-2">Dashboard</span>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link" data-view="featured" id="featured-link">
-                            <div class="flex items-center p-3 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-900">
-                                <i class="fas fa-star w-5"></i>
-                                <span class="ml-2">Featured Articles</span>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link" data-view="publications" id="publications-link">
-                            <div class="flex items-center p-3 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-900">
-                                <i class="fas fa-book w-5"></i>
-                                <span class="ml-2">Publications</span>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link" data-view="preview" id="preview-link">
-                            <div class="flex items-center p-3 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-900">
-                                <i class="fas fa-eye w-5"></i>
-                                <span class="ml-2">Preview</span>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-
-                <h2 class="text-lg font-semibold text-gray-900 mt-8 mb-4">Settings</h2>
-                <ul class="space-y-1">
-                    <li>
-                        <a href="#" class="nav-link" data-view="backup" id="backup-link">
-                            <div class="flex items-center p-3 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-900">
-                                <i class="fas fa-database w-5"></i>
-                                <span class="ml-2">Backup & Restore</span>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link" data-view="help" id="help-link">
-                            <div class="flex items-center p-3 rounded-md hover:bg-blue-50 text-gray-700 hover:text-blue-900">
-                                <i class="fas fa-question-circle w-5"></i>
-                                <span class="ml-2">Help</span>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-
-        <!-- Main Content Area -->
-        <main class="flex-1 content-area p-6">
-            <!-- Dashboard View -->
-            <div id="dashboard-view" class="view">
-                <div class="mb-6">
-                    <h1 class="text-2xl font-bold text-gray-900 academic-title">Dashboard</h1>
-                    <p class="text-gray-600">Welcome to the Islamic Insight Journal admin panel.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <div class="flex items-start justify-between">
-                            <div>
-                                <p class="text-gray-600 text-sm">Featured Articles</p>
-                                <p class="text-2xl font-bold text-gray-900" id="featured-count">0</p>
-                            </div>
-                            <div class="rounded-full bg-blue-100 p-3">
-                                <i class="fas fa-star text-blue-600"></i>
+        <!-- Main Application -->
+        <div id="main-app" class="hidden">
+            <!-- Header -->
+            <header class="bg-white shadow-sm">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between items-center h-16">
+                        <div class="flex items-center">
+                            <button id="sidebar-toggle" class="text-gray-700 mr-3 md:hidden">
+                                <i class="fas fa-bars text-xl"></i>
+                            </button>
+                            <div class="flex items-center">
+                                <h1 class="text-lg font-bold academic-title">Islamic Insight Admin</h1>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <div class="flex items-start justify-between">
-                            <div>
-                                <p class="text-gray-600 text-sm">Publications</p>
-                                <p class="text-2xl font-bold text-gray-900" id="publications-count">0</p>
-                            </div>
-                            <div class="rounded-full bg-green-100 p-3">
-                                <i class="fas fa-book text-green-600"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <div class="flex items-start justify-between">
-                            <div>
-                                <p class="text-gray-600 text-sm">Total Content</p>
-                                <p class="text-2xl font-bold text-gray-900" id="total-content">0</p>
-                            </div>
-                            <div class="rounded-full bg-purple-100 p-3">
-                                <i class="fas fa-file-alt text-purple-600"></i>
-                            </div>
+                        
+                        <div class="flex items-center">
+                            <span class="mr-3 text-sm text-gray-600">Welcome, <span id="admin-username">Admin</span></span>
+                            <button id="logout-btn" class="btn btn-secondary text-sm">Logout</button>
                         </div>
                     </div>
                 </div>
-
-                <div class="bg-white rounded-lg shadow p-6 mb-8">
-                    <h2 class="font-semibold text-lg text-gray-900 mb-4">Recent Updates</h2>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead>
-                                <tr>
-                                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200" id="recent-updates">
-                                <!-- Recent updates will be populated here -->
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" colspan="4">
-                                        No recent updates
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow p-6">
-                    <h2 class="font-semibold text-lg text-gray-900 mb-4">Quick Actions</h2>
-                    <div class="flex flex-wrap gap-4">
-                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center" id="add-new-featured">
-                            <i class="fas fa-plus-circle mr-2"></i> Add Featured Article
-                        </button>
-                        <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md flex items-center" id="add-new-publication">
-                            <i class="fas fa-plus-circle mr-2"></i> Add Publication
-                        </button>
-                        <button class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md flex items-center" id="preview-site">
-                            <i class="fas fa-eye mr-2"></i> Preview Site
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Featured Articles View -->
-            <div id="featured-view" class="view hidden">
-                <div class="flex justify-between items-center mb-6">
-                    <h1 class="text-2xl font-bold text-gray-900 academic-title">Featured Articles</h1>
-                    <button id="add-featured-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center">
-                        <i class="fas fa-plus-circle mr-2"></i> Add New
-                    </button>
-                </div>
-
-                <div class="bg-white rounded-lg shadow overflow-hidden">
-                    <div class="table-container">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50 sticky top-0">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Volume</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categories</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200" id="featured-articles-table">
-                                <!-- Dynamic content will be added here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Publications View -->
-            <div id="publications-view" class="view hidden">
-                <div class="flex justify-between items-center mb-6">
-                    <h1 class="text-2xl font-bold text-gray-900 academic-title">Publications</h1>
-                    <button id="add-publication-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center">
-                        <i class="fas fa-plus-circle mr-2"></i> Add New
-                    </button>
-                </div>
-
-                <div class="bg-white rounded-lg shadow overflow-hidden">
-                    <div class="table-container">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50 sticky top-0">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Authors</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categories</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200" id="publications-table">
-                                <!-- Dynamic content will be added here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Preview View -->
-            <div id="preview-view" class="view hidden">
-                <div class="mb-6">
-                    <h1 class="text-2xl font-bold text-gray-900 academic-title">Preview</h1>
-                    <p class="text-gray-600">Preview how your site will look with the current data.</p>
-                </div>
-
-                <div class="bg-white rounded-lg shadow p-4">
-                    <iframe id="preview-iframe" class="preview-frame w-full h-screen" srcdoc="Loading preview..."></iframe>
-                </div>
-            </div>
-
-            <!-- Backup & Restore View -->
-            <div id="backup-view" class="view hidden">
-                <div class="mb-6">
-                    <h1 class="text-2xl font-bold text-gray-900 academic-title">Backup & Restore</h1>
-                    <p class="text-gray-600">Export or import your site data.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h2 class="font-semibold text-lg text-gray-900 mb-4">Export Data</h2>
-                        <p class="text-gray-600 mb-4">Export all your articles and publications as a JSON file.</p>
-                        <button id="export-data-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center">
-                            <i class="fas fa-file-export mr-2"></i> Export Data
-                        </button>
-                    </div>
-
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h2 class="font-semibold text-lg text-gray-900 mb-4">Import Data</h2>
-                        <p class="text-gray-600 mb-4">Import articles and publications from a JSON file.</p>
-                        <div class="flex flex-col">
-                            <input type="file" id="import-data-file" accept=".json" class="mb-4">
-                            <button id="import-data-btn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md flex items-center self-start">
-                                <i class="fas fa-file-import mr-2"></i> Import Data
+            </header>
+            
+            <div class="flex">
+                <!-- Sidebar -->
+                <aside id="sidebar" class="sidebar bg-white shadow-md h-screen fixed top-16 left-0 bottom-0 z-20 md:block hidden">
+                    <nav class="py-4">
+                        <ul>
+                            <li>
+                                <a href="#dashboard" class="flex items-center px-6 py-3 text-gray-700 hover:bg-blue-50 nav-link">
+                                    <i class="fas fa-tachometer-alt mr-3"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#featured-articles" class="flex items-center px-6 py-3 text-gray-700 hover:bg-blue-50 nav-link">
+                                    <i class="fas fa-newspaper mr-3"></i>
+                                    <span>Featured Articles</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#publications" class="flex items-center px-6 py-3 text-gray-700 hover:bg-blue-50 nav-link">
+                                    <i class="fas fa-book mr-3"></i>
+                                    <span>Publications</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#settings" class="flex items-center px-6 py-3 text-gray-700 hover:bg-blue-50 nav-link">
+                                    <i class="fas fa-cog mr-3"></i>
+                                    <span>Settings</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#import-export" class="flex items-center px-6 py-3 text-gray-700 hover:bg-blue-50 nav-link">
+                                    <i class="fas fa-file-export mr-3"></i>
+                                    <span>Import/Export</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </aside>
+                
+                <!-- Content Area -->
+                <main class="content-area flex-grow p-6 ml-0 md:ml-64 main-content">
+                    <!-- Alert Messages -->
+                    <div id="alert-message" class="hidden mb-6"></div>
+                    
+                    <!-- Dashboard Section -->
+                    <section id="dashboard-section" class="section-content">
+                        <div class="mb-6">
+                            <h2 class="text-2xl font-bold academic-title mb-2">Dashboard</h2>
+                            <p class="text-gray-600">Welcome to the Islamic Insight Journal admin panel.</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-xl font-semibold mb-1" id="featured-count">0</h3>
+                                        <p class="text-gray-600">Featured Articles</p>
+                                    </div>
+                                    <div class="p-3 bg-blue-100 rounded-full">
+                                        <i class="fas fa-newspaper text-blue-500"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-xl font-semibold mb-1" id="publications-count">0</h3>
+                                        <p class="text-gray-600">Publications</p>
+                                    </div>
+                                    <div class="p-3 bg-green-100 rounded-full">
+                                        <i class="fas fa-book text-green-500"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-xl font-semibold mb-1" id="total-count">0</h3>
+                                        <p class="text-gray-600">Total Contents</p>
+                                    </div>
+                                    <div class="p-3 bg-yellow-100 rounded-full">
+                                        <i class="fas fa-file-alt text-yellow-500"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-lg shadow-sm mb-8">
+                            <h3 class="text-lg font-semibold mb-4">Quick Actions</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <a href="#featured-articles" class="btn btn-primary nav-link">
+                                    <i class="fas fa-plus mr-2"></i> Add New Article
+                                </a>
+                                <a href="#publications" class="btn btn-primary nav-link">
+                                    <i class="fas fa-plus mr-2"></i> Add New Publication
+                                </a>
+                                <a href="#import-export" class="btn btn-secondary nav-link">
+                                    <i class="fas fa-file-export mr-2"></i> Export Data
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-lg shadow-sm">
+                            <h3 class="text-lg font-semibold mb-4">Recent Updates</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Type</th>
+                                            <th>Date Modified</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recent-updates">
+                                        <tr>
+                                            <td colspan="3" class="text-center py-4 text-gray-500">No recent updates</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- Featured Articles Section -->
+                    <section id="featured-articles-section" class="section-content hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold academic-title">Featured Articles</h2>
+                            <button id="add-featured-btn" class="btn btn-primary">
+                                <i class="fas fa-plus mr-2"></i> Add New
                             </button>
                         </div>
-                    </div>
-
-                    <div class="bg-white rounded-lg shadow p-6 md:col-span-2">
-                        <h2 class="font-semibold text-lg text-gray-900 mb-4">Reset Data</h2>
-                        <p class="text-gray-600 mb-4">Be careful! This will reset all your data to the initial state.</p>
-                        <button id="reset-data-btn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md flex items-center">
-                            <i class="fas fa-trash mr-2"></i> Reset All Data
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Help View -->
-            <div id="help-view" class="view hidden">
-                <div class="mb-6">
-                    <h1 class="text-2xl font-bold text-gray-900 academic-title">Help</h1>
-                    <p class="text-gray-600">Get help using the admin panel.</p>
-                </div>
-
-                <div class="bg-white rounded-lg shadow p-6">
-                    <h2 class="font-semibold text-lg text-gray-900 mb-4">How to Use</h2>
-                    
-                    <div class="space-y-6">
-                        <div>
-                            <h3 class="font-medium text-gray-900 mb-2">Managing Featured Articles</h3>
-                            <p class="text-gray-600">Featured articles appear on the homepage with images. To add a new featured article:</p>
-                            <ol class="list-decimal list-inside mt-2 ml-4 text-gray-600 space-y-1">
-                                <li>Go to "Featured Articles" in the sidebar</li>
-                                <li>Click "Add New" button</li>
-                                <li>Fill in all the required information</li>
-                                <li>Click "Save" to add the article</li>
-                            </ol>
-                        </div>
-
-                        <div>
-                            <h3 class="font-medium text-gray-900 mb-2">Managing Publications</h3>
-                            <p class="text-gray-600">Publications appear in the publications section. To add a new publication:</p>
-                            <ol class="list-decimal list-inside mt-2 ml-4 text-gray-600 space-y-1">
-                                <li>Go to "Publications" in the sidebar</li>
-                                <li>Click "Add New" button</li>
-                                <li>Fill in all the required information</li>
-                                <li>Click "Save" to add the publication</li>
-                            </ol>
-                        </div>
-
-                        <div>
-                            <h3 class="font-medium text-gray-900 mb-2">Backup and Restore</h3>
-                            <p class="text-gray-600">To backup your data:</p>
-                            <ol class="list-decimal list-inside mt-2 ml-4 text-gray-600 space-y-1">
-                                <li>Go to "Backup & Restore" in the sidebar</li>
-                                <li>Click "Export Data" to download a JSON file</li>
-                            </ol>
-                            <p class="text-gray-600 mt-2">To restore your data:</p>
-                            <ol class="list-decimal list-inside mt-2 ml-4 text-gray-600 space-y-1">
-                                <li>Go to "Backup & Restore" in the sidebar</li>
-                                <li>Select a JSON file using "Choose File" button</li>
-                                <li>Click "Import Data" to restore from the file</li>
-                            </ol>
-                        </div>
-
-                        <div>
-                            <h3 class="font-medium text-gray-900 mb-2">Previewing Your Site</h3>
-                            <p class="text-gray-600">To see how your site will look with the current data:</p>
-                            <ol class="list-decimal list-inside mt-2 ml-4 text-gray-600 space-y-1">
-                                <li>Go to "Preview" in the sidebar</li>
-                                <li>The preview will show how your site will appear with the current data</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Add/Edit Featured Article Modal -->
-    <div id="featured-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-4xl max-h-screen overflow-y-auto">
-            <div class="flex justify-between items-center p-6 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-900" id="featured-modal-title">Add New Featured Article</h3>
-                <button class="close-modal text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            
-            <form id="featured-form" class="p-6">
-                <input type="hidden" id="featured-id">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="col-span-2">
-                        <label for="featured-title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                        <input type="text" id="featured-title" name="title" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    </div>
-                    
-                    <div>
-                        <label for="featured-journal" class="block text-sm font-medium text-gray-700 mb-1">Journal</label>
-                        <input type="text" id="featured-journal" name="journal" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="Islamic Insight" required>
-                    </div>
-                    
-                    <div>
-                        <label for="featured-date" class="block text-sm font-medium text-gray-700 mb-1">Publication Date</label>
-                        <input type="date" id="featured-date" name="date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    </div>
-                    
-                    <div>
-                        <label for="featured-volume" class="block text-sm font-medium text-gray-700 mb-1">Volume</label>
-                        <input type="text" id="featured-volume" name="volume" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Vol. 7, No. 2 (2024)" required>
-                    </div>
-                    
-                    <div>
-                        <label for="featured-pages" class="block text-sm font-medium text-gray-700 mb-1">Pages</label>
-                        <input type="text" id="featured-pages" name="pages" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="pp. 30-50">
-                    </div>
-                    
-                    <div class="col-span-2">
-                        <label for="featured-abstract" class="block text-sm font-medium text-gray-700 mb-1">Abstract</label>
-                        <textarea id="featured-abstract" name="abstract" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
-                    </div>
-
-                    <div>
-                        <label for="featured-categories" class="block text-sm font-medium text-gray-700 mb-1">Categories (comma-separated)</label>
-                        <input type="text" id="featured-categories" name="categories" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Previous, Issued">
-                    </div>
-                    
-                    <div>
-                        <label for="featured-keywords" class="block text-sm font-medium text-gray-700 mb-1">Keywords (comma-separated)</label>
-                        <input type="text" id="featured-keywords" name="keywords" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Islamic studies, Quran">
-                    </div>
-                    
-                    <div class="col-span-2">
-                        <label for="featured-image" class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-                        <input type="text" id="featured-image" name="imageUrl" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="vol7no2.jpg" required>
-                    </div>
-                    
-                    <div class="col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Full Content</label>
-                        <div class="border border-gray-300 rounded-md overflow-hidden">
-                            <div class="p-3 bg-gray-100 border-b border-gray-300 flex items-center justify-between">
-                                <span class="text-sm font-medium text-gray-700">HTML Editor</span>
-                                <div>
-                                    <button type="button" id="preview-content-btn" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded">Preview</button>
-                                    <button type="button" id="edit-content-btn" class="text-xs bg-gray-600 hover:bg-gray-700 text-white px-2 py-1 rounded hidden">Edit</button>
+                        
+                        <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold">Article List</h3>
+                                <div class="flex items-center">
+                                    <input type="text" id="featured-search" placeholder="Search articles..." class="form-input mr-2" style="width: 200px;">
+                                    <select id="featured-filter" class="form-select" style="width: 150px;">
+                                        <option value="">All Categories</option>
+                                        <option value="Previous">Previous</option>
+                                        <option value="Issued">Issued</option>
+                                        <option value="Research">Research</option>
+                                        <option value="Analysis">Analysis</option>
+                                    </select>
                                 </div>
                             </div>
-                            <textarea id="featured-content" name="fullContent" class="w-full px-3 py-2 border-0 focus:outline-none focus:ring-0 md-editor" required></textarea>
-                            <div id="content-preview" class="p-4 md-preview hidden"></div>
+                            
+                            <div class="table-responsive">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Date</th>
+                                            <th>Volume</th>
+                                            <th>Categories</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="featured-articles-list">
+                                        <tr>
+                                            <td colspan="5" class="text-center py-4 text-gray-500">No articles found</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="mt-4 flex justify-between items-center">
+                                <span id="featured-count-display">Showing 0 articles</span>
+                                <ul class="pagination" id="featured-pagination"></ul>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="mt-6 flex justify-end">
-                    <button type="button" class="close-modal mr-3 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
-                        Cancel
-                    </button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                        Save
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add/Edit Publication Modal -->
-    <div id="publication-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-4xl max-h-screen overflow-y-auto">
-            <div class="flex justify-between items-center p-6 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-900" id="publication-modal-title">Add New Publication</h3>
-                <button class="close-modal text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            
-            <form id="publication-form" class="p-6">
-                <input type="hidden" id="publication-id">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="col-span-2">
-                        <label for="publication-title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                        <input type="text" id="publication-title" name="title" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    </div>
-                    
-                    <div>
-                        <label for="publication-authors" class="block text-sm font-medium text-gray-700 mb-1">Authors</label>
-                        <input type="text" id="publication-authors" name="authors" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    
-                    <div>
-                        <label for="publication-journal" class="block text-sm font-medium text-gray-700 mb-1">Journal</label>
-                        <input type="text" id="publication-journal" name="journal" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="Islamic Insight" required>
-                    </div>
-                    
-                    <div>
-                        <label for="publication-date" class="block text-sm font-medium text-gray-700 mb-1">Publication Date</label>
-                        <input type="date" id="publication-date" name="date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    </div>
-                    
-                    <div>
-                        <label for="publication-volume" class="block text-sm font-medium text-gray-700 mb-1">Volume</label>
-                        <input type="text" id="publication-volume" name="volume" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Vol. 8, No 1">
-                    </div>
-                    
-                    <div>
-                        <label for="publication-pages" class="block text-sm font-medium text-gray-700 mb-1">Pages</label>
-                        <input type="text" id="publication-pages" name="pages" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="pp. 30-50">
-                    </div>
-                    
-                    <div>
-                        <label for="publication-doi" class="block text-sm font-medium text-gray-700 mb-1">DOI</label>
-                        <input type="text" id="publication-doi" name="doi" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="10.1234/example">
-                    </div>
-                    
-                    <div class="col-span-2">
-                        <label for="publication-abstract" class="block text-sm font-medium text-gray-700 mb-1">Abstract</label>
-                        <textarea id="publication-abstract" name="abstract" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
-                    </div>
-
-                    <div>
-                        <label for="publication-categories" class="block text-sm font-medium text-gray-700 mb-1">Categories (comma-separated)</label>
-                        <input type="text" id="publication-categories" name="categories" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Announcement, Call for Papers">
-                    </div>
-                    
-                    <div>
-                        <label for="publication-keywords" class="block text-sm font-medium text-gray-700 mb-1">Keywords (comma-separated)</label>
-                        <input type="text" id="publication-keywords" name="keywords" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Islamic studies, Quran">
-                    </div>
-                    
-                    <div class="col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Full Content</label>
-                        <div class="border border-gray-300 rounded-md overflow-hidden">
-                            <div class="p-3 bg-gray-100 border-b border-gray-300 flex items-center justify-between">
-                                <span class="text-sm font-medium text-gray-700">HTML Editor</span>
+                        
+                        <!-- Add/Edit Featured Article Form -->
+                        <div id="featured-form-container" class="bg-white p-6 rounded-lg shadow-sm hidden">
+                            <h3 class="text-lg font-semibold mb-4" id="featured-form-title">Add New Featured Article</h3>
+                            
+                            <form id="featured-form" class="space-y-4">
+                                <input type="hidden" id="featured-id">
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="featured-title" class="block mb-1">Title *</label>
+                                        <input type="text" id="featured-title" class="form-input" required>
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="featured-authors" class="block mb-1">Authors</label>
+                                        <input type="text" id="featured-authors" class="form-input">
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label for="featured-journal" class="block mb-1">Journal Name</label>
+                                        <input type="text" id="featured-journal" class="form-input" value="Islamic Insight">
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="featured-date" class="block mb-1">Publication Date *</label>
+                                        <input type="date" id="featured-date" class="form-input" required>
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="featured-volume" class="block mb-1">Volume *</label>
+                                        <input type="text" id="featured-volume" class="form-input" placeholder="e.g., Vol. 5, No. 2" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="featured-pages" class="block mb-1">Page Numbers</label>
+                                        <input type="text" id="featured-pages" class="form-input" placeholder="e.g., pp. 30-45">
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="featured-doi" class="block mb-1">DOI</label>
+                                        <input type="text" id="featured-doi" class="form-input" placeholder="Digital Object Identifier">
+                                    </div>
+                                </div>
+                                
                                 <div>
-                                    <button type="button" id="preview-pub-content-btn" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded">Preview</button>
-                                    <button type="button" id="edit-pub-content-btn" class="text-xs bg-gray-600 hover:bg-gray-700 text-white px-2 py-1 rounded hidden">Edit</button>
+                                    <label class="block mb-1">Categories *</label>
+                                    <div class="flex flex-wrap gap-2" id="category-options">
+                                        <label class="inline-flex items-center">
+                                            <input type="checkbox" class="category-checkbox" value="Previous"> <span class="ml-2">Previous</span>
+                                        </label>
+                                        <label class="inline-flex items-center">
+                                            <input type="checkbox" class="category-checkbox" value="Issued"> <span class="ml-2">Issued</span>
+                                        </label>
+                                        <label class="inline-flex items-center">
+                                            <input type="checkbox" class="category-checkbox" value="Research"> <span class="ml-2">Research</span>
+                                        </label>
+                                        <label class="inline-flex items-center">
+                                            <input type="checkbox" class="category-checkbox" value="Analysis"> <span class="ml-2">Analysis</span>
+                                        </label>
+                                    </div>
+                                    <div class="mt-2">
+                                        <input type="text" id="new-category" class="form-input" placeholder="Add new category" style="width: 200px; display: inline-block;">
+                                        <button type="button" id="add-category-btn" class="btn btn-secondary ml-2">Add</button>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label for="featured-abstract" class="block mb-1">Abstract *</label>
+                                    <textarea id="featured-abstract" class="form-textarea" rows="4" required></textarea>
+                                </div>
+                                
+                                <div>
+                                    <label for="featured-keywords" class="block mb-1">Keywords (comma separated)</label>
+                                    <input type="text" id="featured-keywords" class="form-input" placeholder="e.g., Islam, Quran, Research">
+                                </div>
+                                
+                                <div>
+                                    <label for="featured-content" class="block mb-1">Full Content *</label>
+                                    <textarea id="featured-content" class="form-textarea" rows="10" required></textarea>
+                                </div>
+                                
+                                <div>
+                                    <label for="featured-image" class="block mb-1">Image URL</label>
+                                    <input type="text" id="featured-image" class="form-input" placeholder="https://example.com/image.jpg">
+                                    <div class="mt-2" id="image-preview-container">
+                                        <img id="featured-image-preview" class="image-preview hidden" alt="Image preview">
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-end space-x-4">
+                                    <button type="button" id="featured-cancel-btn" class="btn btn-secondary">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Save Article</button>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                    
+                    <!-- Publications Section -->
+                    <section id="publications-section" class="section-content hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold academic-title">Publications</h2>
+                            <button id="add-publication-btn" class="btn btn-primary">
+                                <i class="fas fa-plus mr-2"></i> Add New
+                            </button>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold">Publication List</h3>
+                                <div class="flex items-center">
+                                    <input type="text" id="publication-search" placeholder="Search publications..." class="form-input mr-2" style="width: 200px;">
+                                    <select id="publication-filter" class="form-select" style="width: 150px;">
+                                        <option value="">All Categories</option>
+                                        <option value="Announcement">Announcement</option>
+                                        <option value="Research">Research</option>
+                                        <option value="Analysis">Analysis</option>
+                                    </select>
                                 </div>
                             </div>
-                            <textarea id="publication-content" name="fullContent" class="w-full px-3 py-2 border-0 focus:outline-none focus:ring-0 md-editor" required></textarea>
-                            <div id="pub-content-preview" class="p-4 md-preview hidden"></div>
+                            
+                            <div class="table-responsive">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Date</th>
+                                            <th>Categories</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="publications-list">
+                                        <tr>
+                                            <td colspan="4" class="text-center py-4 text-gray-500">No publications found</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="mt-4 flex justify-between items-center">
+                                <span id="publications-count-display">Showing 0 publications</span>
+                                <ul class="pagination" id="publications-pagination"></ul>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="mt-6 flex justify-end">
-                    <button type="button" class="close-modal mr-3 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
-                        Cancel
-                    </button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                        Save
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-md">
-            <div class="p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Confirm Deletion</h3>
-                <p class="text-gray-600 mb-6" id="delete-message">Are you sure you want to delete this item? This action cannot be undone.</p>
-                <div class="flex justify-end">
-                    <button id="cancel-delete" class="mr-3 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
-                        Cancel
-                    </button>
-                    <button id="confirm-delete" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
-                        Delete
-                    </button>
-                </div>
+                        
+                        <!-- Add/Edit Publication Form -->
+                        <div id="publication-form-container" class="bg-white p-6 rounded-lg shadow-sm hidden">
+                            <h3 class="text-lg font-semibold mb-4" id="publication-form-title">Add New Publication</h3>
+                            
+                            <form id="publication-form" class="space-y-4">
+                                <input type="hidden" id="publication-id">
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="publication-title" class="block mb-1">Title *</label>
+                                        <input type="text" id="publication-title" class="form-input" required>
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="publication-authors" class="block mb-1">Authors</label>
+                                        <input type="text" id="publication-authors" class="form-input">
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label for="publication-journal" class="block mb-1">Journal Name</label>
+                                        <input type="text" id="publication-journal" class="form-input" value="Islamic Insight">
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="publication-date" class="block mb-1">Publication Date *</label>
+                                        <input type="date" id="publication-date" class="form-input" required>
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="publication-volume" class="block mb-1">Volume</label>
+                                        <input type="text" id="publication-volume" class="form-input" placeholder="e.g., Vol. 5, No. 2">
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label for="publication-pages" class="block mb-1">Page Numbers</label>
+                                    <input type="text" id="publication-pages" class="form-input" placeholder="e.g., pp. 30-45">
+                                </div>
+                                
+                                <div>
+                                    <label for="publication-doi" class="block mb-1">DOI</label>
+                                    <input type="text" id="publication-doi" class="form-input" placeholder="Digital Object Identifier">
+                                </div>
+                                
+                                <div>
+                                    <label class="block mb-1">Categories *</label>
+                                    <div class="flex flex-wrap gap-2" id="publication-category-options">
+                                        <label class="inline-flex items-center">
+                                            <input type="checkbox" class="publication-category-checkbox" value="Announcement"> <span class="ml-2">Announcement</span>
+                                        </label>
+                                        <label class="inline-flex items-center">
+                                            <input type="checkbox" class="publication-category-checkbox" value="Research"> <span class="ml-2">Research</span>
+                                        </label>
+                                        <label class="inline-flex items-center">
+                                            <input type="checkbox" class="publication-category-checkbox" value="Analysis"> <span class="ml-2">Analysis</span>
+                                        </label>
+                                    </div>
+                                    <div class="mt-2">
+                                        <input type="text" id="new-publication-category" class="form-input" placeholder="Add new category" style="width: 200px; display: inline-block;">
+                                        <button type="button" id="add-publication-category-btn" class="btn btn-secondary ml-2">Add</button>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label for="publication-abstract" class="block mb-1">Abstract *</label>
+                                    <textarea id="publication-abstract" class="form-textarea" rows="4" required></textarea>
+                                </div>
+                                
+                                <div>
+                                    <label for="publication-keywords" class="block mb-1">Keywords (comma separated)</label>
+                                    <input type="text" id="publication-keywords" class="form-input" placeholder="e.g., Islam, Quran, Research">
+                                </div>
+                                
+                                <div>
+                                    <label for="publication-content" class="block mb-1">Full Content *</label>
+                                    <textarea id="publication-content" class="form-textarea" rows="10" required></textarea>
+                                </div>
+                                
+                                <div class="flex justify-end space-x-4">
+                                    <button type="button" id="publication-cancel-btn" class="btn btn-secondary">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Save Publication</button>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                    
+                    <!-- Settings Section -->
+                    <section id="settings-section" class="section-content hidden">
+                        <div class="mb-6">
+                            <h2 class="text-2xl font-bold academic-title mb-2">Settings</h2>
+                            <p class="text-gray-600">Manage your account and application settings.</p>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
+                            <h3 class="text-lg font-semibold mb-4">Admin Account</h3>
+                            
+                            <form id="admin-settings-form" class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="admin-username-change" class="block mb-1">Username</label>
+                                        <input type="text" id="admin-username-change" class="form-input" required>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="text-md font-medium mb-2">Change Password</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="current-password" class="block mb-1">Current Password</label>
+                                            <input type="password" id="current-password" class="form-input">
+                                        </div>
+                                        
+                                        <div>
+                                            <label for="new-admin-password" class="block mb-1">New Password</label>
+                                            <input type="password" id="new-admin-password" class="form-input">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-end">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-lg shadow-sm">
+                            <h3 class="text-lg font-semibold mb-4">Danger Zone</h3>
+                            
+                            <div class="border border-red-200 rounded-lg p-4 bg-red-50">
+                                <h4 class="text-md font-medium text-red-800 mb-2">Reset Application Data</h4>
+                                <p class="text-sm text-red-600 mb-4">This will delete all articles, publications, and settings. This action cannot be undone.</p>
+                                
+                                <button type="button" id="reset-data-btn" class="btn btn-danger">Reset All Data</button>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- Import/Export Section -->
+                    <section id="import-export-section" class="section-content hidden">
+                        <div class="mb-6">
+                            <h2 class="text-2xl font-bold academic-title mb-2">Import/Export Data</h2>
+                            <p class="text-gray-600">Backup and restore your articles and publications.</p>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
+                            <h3 class="text-lg font-semibold mb-4">Export Data</h3>
+                            <p class="text-gray-600 mb-4">Download all your data as a JSON file for backup.</p>
+                            
+                            <button type="button" id="export-data-btn" class="btn btn-primary">
+                                <i class="fas fa-download mr-2"></i> Export All Data
+                            </button>
+                            
+                            <div class="mt-4">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="export-featured" checked>
+                                    <label for="export-featured" class="ml-2">Featured Articles</label>
+                                </div>
+                                <div class="flex items-center mt-2">
+                                    <input type="checkbox" id="export-publications" checked>
+                                    <label for="export-publications" class="ml-2">Publications</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-lg shadow-sm">
+                            <h3 class="text-lg font-semibold mb-4">Import Data</h3>
+                            <p class="text-gray-600 mb-4">Import data from a previously exported JSON file.</p>
+                            
+                            <div class="mb-4">
+                                <input type="file" id="import-file" accept=".json" class="block w-full text-sm text-gray-500
+                                    file:mr-4 file:py-2 file:px-4
+                                    file:rounded-md file:border-0
+                                    file:text-sm file:font-semibold
+                                    file:bg-blue-50 file:text-blue-700
+                                    hover:file:bg-blue-100">
+                            </div>
+                            
+                            <div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="replace-existing" checked>
+                                    <label for="replace-existing" class="ml-2">Replace existing data</label>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-1">If unchecked, imported data will be merged with existing data.</p>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <button type="button" id="import-data-btn" class="btn btn-primary">
+                                    <i class="fas fa-upload mr-2"></i> Import Data
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                </main>
             </div>
         </div>
     </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="toast bg-green-500 text-white hidden">
-        <span id="toast-message">Operation completed successfully!</span>
+    
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4" id="confirm-title">Confirmation</h3>
+            <p id="confirm-message" class="text-gray-600 mb-6"></p>
+            <div class="flex justify-end space-x-4">
+                <button id="confirm-cancel" class="btn btn-secondary">Cancel</button>
+                <button id="confirm-ok" class="btn btn-danger">Confirm</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Data storage
-        let featuredArticles = [];
-        let publications = [];
-        let nextId = 1;
-        let itemToDelete = null;
-
-        // DOM Elements
-        const views = document.querySelectorAll('.view');
-        const navLinks = document.querySelectorAll('.nav-link');
-        const featuredArticlesTable = document.getElementById('featured-articles-table');
-        const publicationsTable = document.getElementById('publications-table');
-        const featuredModal = document.getElementById('featured-modal');
-        const publicationModal = document.getElementById('publication-modal');
-        const deleteModal = document.getElementById('delete-modal');
-        const toast = document.getElementById('toast');
-        const previewFrame = document.getElementById('preview-iframe');
-        const featuredForm = document.getElementById('featured-form');
-        const publicationForm = document.getElementById('publication-form');
-        const deleteMessage = document.getElementById('delete-message');
-        const confirmDelete = document.getElementById('confirm-delete');
-        const cancelDelete = document.getElementById('cancel-delete');
-        const addFeaturedBtn = document.getElementById('add-featured-btn');
-        const addPublicationBtn = document.getElementById('add-publication-btn');
-        const dashboardFeaturedBtn = document.getElementById('add-new-featured');
-        const dashboardPublicationBtn = document.getElementById('add-new-publication');
-        const previewSiteBtn = document.getElementById('preview-site');
-        const saveAllBtn = document.getElementById('save-all-btn');
-        const exportBtn = document.getElementById('export-btn');
-        const importBtn = document.getElementById('import-btn');
-        const exportDataBtn = document.getElementById('export-data-btn');
-        const importDataBtn = document.getElementById('import-data-btn');
-        const importDataFile = document.getElementById('import-data-file');
-        const resetDataBtn = document.getElementById('reset-data-btn');
-        const closeModalBtns = document.querySelectorAll('.close-modal');
-        const previewContentBtn = document.getElementById('preview-content-btn');
-        const editContentBtn = document.getElementById('edit-content-btn');
-        const previewPubContentBtn = document.getElementById('preview-pub-content-btn');
-        const editPubContentBtn = document.getElementById('edit-pub-content-btn');
-        const featuredContent = document.getElementById('featured-content');
-        const contentPreview = document.getElementById('content-preview');
-        const publicationContent = document.getElementById('publication-content');
-        const pubContentPreview = document.getElementById('pub-content-preview');
-        
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', function() {
-            loadData();
-            setupEventListeners();
-            showView('dashboard');
-            updateDashboardCounts();
+        // Initialize TinyMCE
+        tinymce.init({
+            selector: '#featured-content, #publication-content',
+            height: 400,
+            menubar: false,
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | blocks | bold italic backcolor | ' +
+                'alignleft aligncenter alignright alignjustify | ' +
+                'bullist numlist outdent indent | link image | removeformat | help',
+            content_style: 'body { font-family: Inter, sans-serif; font-size: 14px }',
+            setup: function (editor) {
+                editor.on('change', function () {
+                    editor.save();
+                });
+            }
         });
 
-        // Setup Event Listeners
-        function setupEventListeners() {
-            // Navigation
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const view = this.getAttribute('data-view');
-                    showView(view);
-                });
-            });
+        // Application State
+        const appState = {
+            currentSection: 'dashboard',
+            featuredArticles: [],
+            publications: [],
+            currentFeaturedPage: 1,
+            currentPublicationPage: 1,
+            itemsPerPage: 10,
+            editingFeaturedId: null,
+            editingPublicationId: null,
+            currentUser: null,
+            recentUpdates: []
+        };
 
-            // Modal buttons
-            addFeaturedBtn.addEventListener('click', () => openFeaturedModal());
-            addPublicationBtn.addEventListener('click', () => openPublicationModal());
-            dashboardFeaturedBtn.addEventListener('click', () => {
-                showView('featured');
-                openFeaturedModal();
-            });
-            dashboardPublicationBtn.addEventListener('click', () => {
-                showView('publications');
-                openPublicationModal();
-            });
-            previewSiteBtn.addEventListener('click', () => showView('preview'));
-            
-            // Close modals
-            closeModalBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    featuredModal.classList.add('hidden');
-                    publicationModal.classList.add('hidden');
-                    deleteModal.classList.add('hidden');
-                });
-            });
+        // DOM Elements
+        const dom = {
+            loginScreen: document.getElementById('login-screen'),
+            mainApp: document.getElementById('main-app'),
+            sidebarToggle: document.getElementById('sidebar-toggle'),
+            sidebar: document.getElementById('sidebar'),
+            adminUsername: document.getElementById('admin-username'),
+            logoutBtn: document.getElementById('logout-btn'),
+            navLinks: document.querySelectorAll('.nav-link'),
+            sections: document.querySelectorAll('.section-content'),
+            featuredArticlesList: document.getElementById('featured-articles-list'),
+            publicationsList: document.getElementById('publications-list'),
+            featuredCount: document.getElementById('featured-count'),
+            publicationsCount: document.getElementById('publications-count'),
+            totalCount: document.getElementById('total-count'),
+            featuredPagination: document.getElementById('featured-pagination'),
+            publicationsPagination: document.getElementById('publications-pagination'),
+            featuredCountDisplay: document.getElementById('featured-count-display'),
+            publicationsCountDisplay: document.getElementById('publications-count-display'),
+            featuredSearch: document.getElementById('featured-search'),
+            featuredFilter: document.getElementById('featured-filter'),
+            publicationSearch: document.getElementById('publication-search'),
+            publicationFilter: document.getElementById('publication-filter'),
+            addFeaturedBtn: document.getElementById('add-featured-btn'),
+            addPublicationBtn: document.getElementById('add-publication-btn'),
+            featuredFormContainer: document.getElementById('featured-form-container'),
+            publicationFormContainer: document.getElementById('publication-form-container'),
+            featuredForm: document.getElementById('featured-form'),
+            publicationForm: document.getElementById('publication-form'),
+            featuredFormTitle: document.getElementById('featured-form-title'),
+            publicationFormTitle: document.getElementById('publication-form-title'),
+            featuredCancelBtn: document.getElementById('featured-cancel-btn'),
+            publicationCancelBtn: document.getElementById('publication-cancel-btn'),
+            loginForm: document.getElementById('login-form'),
+            setupAdmin: document.getElementById('setup-admin'),
+            setupForm: document.getElementById('setup-form'),
+            adminSetupForm: document.getElementById('admin-setup-form'),
+            adminSettingsForm: document.getElementById('admin-settings-form'),
+            resetDataBtn: document.getElementById('reset-data-btn'),
+            exportDataBtn: document.getElementById('export-data-btn'),
+            importDataBtn: document.getElementById('import-data-btn'),
+            alertMessage: document.getElementById('alert-message'),
+            confirmModal: document.getElementById('confirm-modal'),
+            confirmTitle: document.getElementById('confirm-title'),
+            confirmMessage: document.getElementById('confirm-message'),
+            confirmCancel: document.getElementById('confirm-cancel'),
+            confirmOk: document.getElementById('confirm-ok'),
+            recentUpdates: document.getElementById('recent-updates'),
+            addCategoryBtn: document.getElementById('add-category-btn'),
+            addPublicationCategoryBtn: document.getElementById('add-publication-category-btn'),
+            featuredImagePreview: document.getElementById('featured-image-preview'),
+            featuredImage: document.getElementById('featured-image')
+        };
 
-            // Delete buttons
-            cancelDelete.addEventListener('click', () => deleteModal.classList.add('hidden'));
-            confirmDelete.addEventListener('click', confirmDeleteItem);
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+            setupEventListeners();
+        });
 
-            // Forms
-            featuredForm.addEventListener('submit', handleFeaturedForm);
-            publicationForm.addEventListener('submit', handlePublicationForm);
-
-            // Content preview
-            previewContentBtn.addEventListener('click', () => {
-                contentPreview.innerHTML = featuredContent.value;
-                featuredContent.classList.add('hidden');
-                contentPreview.classList.remove('hidden');
-                previewContentBtn.classList.add('hidden');
-                editContentBtn.classList.remove('hidden');
-            });
-
-            editContentBtn.addEventListener('click', () => {
-                featuredContent.classList.remove('hidden');
-                contentPreview.classList.add('hidden');
-                previewContentBtn.classList.remove('hidden');
-                editContentBtn.classList.add('hidden');
-            });
-
-            previewPubContentBtn.addEventListener('click', () => {
-                pubContentPreview.innerHTML = publicationContent.value;
-                publicationContent.classList.add('hidden');
-                pubContentPreview.classList.remove('hidden');
-                previewPubContentBtn.classList.add('hidden');
-                editPubContentBtn.classList.remove('hidden');
-            });
-
-            editPubContentBtn.addEventListener('click', () => {
-                publicationContent.classList.remove('hidden');
-                pubContentPreview.classList.add('hidden');
-                previewPubContentBtn.classList.remove('hidden');
-                editPubContentBtn.classList.add('hidden');
-            });
-
-            // Save all changes
-            saveAllBtn.addEventListener('click', saveData);
-
-            // Export and import
-            exportBtn.addEventListener('click', exportData);
-            importBtn.addEventListener('click', () => document.getElementById('backup-link').click());
-            exportDataBtn.addEventListener('click', exportData);
-            importDataBtn.addEventListener('click', importData);
-            resetDataBtn.addEventListener('click', confirmResetData);
+        // Initialize the application
+        function initApp() {
+            // Check if admin account exists
+            if (!localStorage.getItem('adminAccount')) {
+                dom.loginScreen.classList.remove('hidden');
+                dom.setupAdmin.classList.remove('hidden');
+                dom.mainApp.classList.add('hidden');
+            } else if (localStorage.getItem('adminLoggedIn')) {
+                loadUserData();
+                dom.loginScreen.classList.add('hidden');
+                dom.mainApp.classList.remove('hidden');
+                loadData();
+                showSection('dashboard');
+            } else {
+                dom.loginScreen.classList.remove('hidden');
+                dom.mainApp.classList.add('hidden');
+            }
         }
 
-        // Show selected view
-        function showView(viewId) {
-            views.forEach(view => view.classList.add('hidden'));
-            document.getElementById(`${viewId}-view`).classList.remove('hidden');
-            
-            // Add active class to nav link
-            navLinks.forEach(link => {
-                link.querySelector('div').classList.remove('bg-blue-50', 'text-blue-900');
-                link.querySelector('div').classList.add('hover:bg-blue-50', 'text-gray-700', 'hover:text-blue-900');
-            });
-            document.getElementById(`${viewId}-link`).querySelector('div').classList.add('bg-blue-50', 'text-blue-900');
-            document.getElementById(`${viewId}-link`).querySelector('div').classList.remove('hover:bg-blue-50', 'text-gray-700');
-            
-            // Load specific view content
-            if (viewId === 'featured') {
-                renderFeaturedArticles();
-            } else if (viewId === 'publications') {
-                renderPublications();
-            } else if (viewId === 'preview') {
-                renderPreview();
+        // Load user data
+        function loadUserData() {
+            const admin = JSON.parse(localStorage.getItem('adminAccount'));
+            if (admin) {
+                appState.currentUser = admin.username;
+                dom.adminUsername.textContent = admin.username;
+                if (document.getElementById('admin-username-change')) {
+                    document.getElementById('admin-username-change').value = admin.username;
+                }
             }
         }
 
         // Load data from local storage
         function loadData() {
             try {
-                const savedFeatured = localStorage.getItem('featuredArticles');
-                const savedPublications = localStorage.getItem('publications');
-                const savedNextId = localStorage.getItem('nextId');
+                appState.featuredArticles = JSON.parse(localStorage.getItem('featuredArticles')) || [];
+                appState.publications = JSON.parse(localStorage.getItem('publications')) || [];
                 
-                if (savedFeatured) {
-                    featuredArticles = JSON.parse(savedFeatured);
-                } else {
-                    // Initialize with sample data
-                    featuredArticles = [
-                        {
-                            id: 1,
-                            title: "Vol. 7 No. 2 (2024) ISLAMIC INSIGHT JOURNAL OF ISLAMIC STUDIES",
-                            authors: "",
-                            journal: "Islamic Insight",
-                            date: "2024-12-01",
-                            volume: "Vol. 7 No. 2 (2024)",
-                            pages: "",
-                            doi: "",
-                            categories: ["Previous", "Issued"],
-                            abstract: "Islamic Insight Journal of Islamic Studies (IIJIS) functions as a bilingual (English and Arabi) platform for disseminating exceptional academic research on Islam and the Muslim world.",
-                            keywords: [""],
-                            imageUrl: "vol7no2.jpg",
-                            fullContent: `
-                                <p>Islamic Insight Journal of Islamic Studies (IIJIS) functions as a bilingual (English and Arabi) platform for disseminating exceptional academic research on Islam and the Muslim world. It welcomes original scholarship across various disciplines, encompassing textual analysis of the Quran and Hadith, Islamic legal and theological discourse, philosophy, comparative religion, social sciences, and the historical and cultural experiences of Muslims. Notably, IIJIS employs a rigorous double-blind peer review process to ensure the quality of published works.</p>
-                                <h2>Articles</h2>
-                                <button onclick="location.href='index1.html'" style="font-size:24px;color:blue;">SHOW ALL <i class="fa fa-book"></i></button>
-                                <br><br><br>
-                            `
-                        },
-                        {
-                            id: 2,
-                            title: "Vol. 7 No. 1 (2024) ISLAMIC INSIGHT: JOURNAL OF ISLAMIC STUDIES",
-                            authors: "",
-                            journal: "Islamic Insight",
-                            date: "2024-06-30",
-                            volume: "Vol. 7 No. 1 (2024)",
-                            pages: "",
-                            doi: "",
-                            categories: ["Previous", "Issued"],
-                            abstract: "Islamic Insight Journal of Islamic Studies (IIJIS) functions as a bilingual (English and Arabi) platform for disseminating exceptional academic research on Islam and the Muslim world.",
-                            keywords: [""],
-                            imageUrl: "vol7no1.jpg",
-                            fullContent: `
-                                <p>Islamic Insight Journal of Islamic Studies (IIJIS) functions as a bilingual (English and Arabi) platform for disseminating exceptional academic research on Islam and the Muslim world. It welcomes original scholarship across various disciplines, encompassing textual analysis of the Quran and Hadith, Islamic legal and theological discourse, philosophy, comparative religion, social sciences, and the historical and cultural experiences of Muslims. Notably, IIJIS employs a rigorous double-blind peer review process to ensure the quality of published works.</p>
-                                <h2>Articles</h2>
-                                <button onclick="location.href='index2.html'" style="font-size:24px;color:blue;">SHOW ALL <i class="fa fa-book"></i></button>
-                                <br><br><br>
-                            `
-                        }
-                    ];
+                // Initialize with some default data if empty
+                if (appState.featuredArticles.length === 0 && appState.publications.length === 0) {
+                    initializeDefaultData();
                 }
                 
-                if (savedPublications) {
-                    publications = JSON.parse(savedPublications);
-                } else {
-                    // Initialize with sample data
-                    publications = [
-                        {
-                            id: 0,
-                            title: "Call For Papers",
-                            authors: "",
-                            journal: "Islamic Insight",
-                            date: "2025-05-14",
-                            volume: "Vol. 8, No 1",
-                            pages: "pp. 30-50",
-                            doi: "",
-                            categories: ["Announcement"],
-                            abstract: "We are pleased to invite original research articles for the upcoming issue of Islamic Insight, a biannual peer-reviewed journal published by the Kulliyyah of Qur'an and Sunnah, Darul Huda Islamic University, Kerala, India.",
-                            keywords: ["For submission: islamicinsight@dhiu.in"],
-                            fullContent: `
-                                <h2>Call For Papers</h2>
-                                <p>We are pleased to invite original research articles for the upcoming issue of Islamic Insight, a biannual peer-reviewed journal published by the Kulliyyah of Qur'an and Sunnah, Darul Huda Islamic University, Kerala, India. Islamic Insight welcomes high-quality, interdisciplinary research in areas related to Islamic revealed knowledge and the Muslim world. This includes-but is not limited to- studies in the Noble Qur'an, Hadith, Islamic Theology, Islamic Social Sciences, and Muslim History and Culture. Unique and relevant contributions beyond the prescribed disciplines are also encouraged. All submissions will undergo a double-blind peer review process. Send your manuscripts by mid-June 2025 for consideration in Vol. 8, No. 1 (2025).</p>
-                                <p>For submission: islamicinsight@dhiu.in</p>
-                            `
-                        }
-                    ];
-                }
+                // Load recent updates
+                appState.recentUpdates = JSON.parse(localStorage.getItem('recentUpdates')) || [];
                 
-                nextId = savedNextId ? parseInt(savedNextId) : 3;
-                
+                updateCounts();
+                renderFeaturedArticles();
+                renderPublications();
+                renderRecentUpdates();
             } catch (error) {
-                console.error('Error loading data:', error);
-                showToast('Error loading data from storage.', 'error');
+                showAlert('Error loading data: ' + error.message, 'danger');
             }
         }
 
-        // Save data to local storage
-        function saveData() {
-            try {
-                localStorage.setItem('featuredArticles', JSON.stringify(featuredArticles));
-                localStorage.setItem('publications', JSON.stringify(publications));
-                localStorage.setItem('nextId', nextId.toString());
-                showToast('All changes saved successfully!');
-            } catch (error) {
-                console.error('Error saving data:', error);
-                showToast('Error saving data to storage.', 'error');
-            }
+        // Initialize with default data
+        function initializeDefaultData() {
+            // Add default featured article
+            appState.featuredArticles = [
+                {
+                    id: 1,
+                    title: "Vol. 7 No. 2 (2024) ISLAMIC INSIGHT JOURNAL OF ISLAMIC STUDIES",
+                    authors: "",
+                    journal: "Islamic Insight",
+                    date: "2024-12-01",
+                    volume: "Vol. 7 No. 2 (2024)",
+                    pages: "",
+                    doi: "",
+                    categories: ["Previous", "Issued"],
+                    abstract: "Islamic Insight Journal of Islamic Studies (IIJIS) functions as a bilingual (English and Arabi) platform for disseminating exceptional academic research on Islam and the Muslim world.",
+                    keywords: [""],
+                    imageUrl: "vol7no2.jpg",
+                    fullContent: "<h2>About This Issue</h2><p>Islamic Insight Journal of Islamic Studies (IIJIS) functions as a bilingual (English and Arabi) platform for disseminating exceptional academic research on Islam and the Muslim world. It welcomes original scholarship across various disciplines, encompassing textual analysis of the Quran and Hadith, Islamic legal and theological discourse, philosophy, comparative religion, social sciences, and the historical and cultural experiences of Muslims. Notably, IIJIS employs a rigorous double-blind peer review process to ensure the quality of published works.</p><h2>Articles</h2><button onclick=\"location.href='index1.html'\" style=\"font-size:24px;color:blue;\">SHOW ALL <i class=\"fa fa-book\"></i></button><br><br><br>"
+                }
+            ];
+            
+            // Add default publication
+            appState.publications = [
+                {
+                    id: 0,
+                    title: "Call For Papers",
+                    authors: "",
+                    journal: "Islamic Insight",
+                    date: "2025-05-14",
+                    volume: "Vol. 8, No 1",
+                    pages: "pp. 30-50",
+                    doi: "",
+                    categories: ["Announcement"],
+                    abstract: "We are pleased to invite original research articles for the upcoming issue of Islamic Insight, a biannual peer-reviewed journal published by the Kulliyyah of Qur'an and Sunnah, Darul Huda Islamic University, Kerala, India.",
+                    keywords: ["For submission: islamicinsight@dhiu.in"],
+                    fullContent: "<h2>Call For Papers</h2><p>We are pleased to invite original research articles for the upcoming issue of Islamic Insight, a biannual peer-reviewed journal published by the Kulliyyah of Qur'an and Sunnah, Darul Huda Islamic University, Kerala, India. Islamic Insight welcomes high-quality, interdisciplinary research in areas related to Islamic revealed knowledge and the Muslim world. This includes-but is not limited to- studies in the Noble Qur'an, Hadith, Islamic Theology, Islamic Social Sciences, and Muslim History and Culture. Unique and relevant contributions beyond the prescribed disciplines are also encouraged. All submissions will undergo a double-blind peer review process. Send your manuscripts by mid-June 2025 for consideration in Vol. 8, No. 1 (2025).</p><p>For submission: islamicinsight@dhiu.in</p>"
+                }
+            ];
+            
+            // Save to localStorage
+            saveData();
         }
 
-        // Render featured articles table
-        function renderFeaturedArticles() {
-            featuredArticlesTable.innerHTML = '';
-            
-            if (featuredArticles.length === 0) {
-                featuredArticlesTable.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                            No featured articles yet. Click "Add New" to create one.
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            featuredArticles.forEach(article => {
-                const row = document.createElement('tr');
-                
-                const formattedDate = new Date(article.date).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
+        // Set up event listeners
+        function setupEventListeners() {
+            // Mobile sidebar toggle
+            if (dom.sidebarToggle) {
+                dom.sidebarToggle.addEventListener('click', function() {
+                    dom.sidebar.classList.toggle('hidden');
+                    dom.sidebar.classList.toggle('md:block');
                 });
-                
-                const categories = article.categories ? article.categories.join(', ') : '';
-                
-                row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${article.id}</td>
-                    <td class="px-6 py-4 text-sm text-gray-900">
-                        <div class="font-medium">${article.title}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${article.volume}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formattedDate}</td>
-                    <td class="px-6 py-4 text-sm text-gray-500">${categories}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button class="text-blue-600 hover:text-blue-900 mr-3" onclick="editFeaturedArticle(${article.id})">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button class="text-red-600 hover:text-red-900" onclick="deleteFeaturedArticle(${article.id})">
-                            <i class="fas fa-trash-alt"></i> Delete
-                        </button>
-                    </td>
-                `;
-                
-                featuredArticlesTable.appendChild(row);
+            }
+            
+            // Navigation links
+            dom.navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('href').substring(1);
+                    showSection(section);
+                    
+                    // Close mobile sidebar if open
+                    if (window.innerWidth < 768) {
+                        dom.sidebar.classList.add('hidden');
+                    }
+                });
+            });
+            
+            // Login form
+            dom.loginForm.addEventListener('submit', handleLogin);
+            
+            // Setup admin button
+            dom.setupAdmin.addEventListener('click', function() {
+                dom.setupForm.classList.toggle('hidden');
+            });
+            
+            // Admin setup form
+            dom.adminSetupForm.addEventListener('submit', handleAdminSetup);
+            
+            // Logout button
+            dom.logoutBtn.addEventListener('click', handleLogout);
+            
+            // Featured Articles
+            dom.addFeaturedBtn.addEventListener('click', showFeaturedForm);
+            dom.featuredForm.addEventListener('submit', handleFeaturedSubmit);
+            dom.featuredCancelBtn.addEventListener('click', hideFeaturedForm);
+            dom.featuredSearch.addEventListener('input', renderFeaturedArticles);
+            dom.featuredFilter.addEventListener('change', renderFeaturedArticles);
+            
+            // Publications
+            dom.addPublicationBtn.addEventListener('click', showPublicationForm);
+            dom.publicationForm.addEventListener('submit', handlePublicationSubmit);
+            dom.publicationCancelBtn.addEventListener('click', hidePublicationForm);
+            dom.publicationSearch.addEventListener('input', renderPublications);
+            dom.publicationFilter.addEventListener('change', renderPublications);
+            
+            // Admin settings
+            if (dom.adminSettingsForm) {
+                dom.adminSettingsForm.addEventListener('submit', handleAdminSettingsSubmit);
+            }
+            
+            // Reset data button
+            dom.resetDataBtn.addEventListener('click', function() {
+                showConfirmationModal(
+                    'Reset All Data',
+                    'Are you sure you want to reset all data? This action cannot be undone.',
+                    resetAllData
+                );
+            });
+            
+            // Export data button
+            dom.exportDataBtn.addEventListener('click', exportData);
+            
+            // Import data button
+            dom.importDataBtn.addEventListener('click', importData);
+            
+            // Confirm modal buttons
+            dom.confirmCancel.addEventListener('click', hideConfirmationModal);
+            
+            // Add category buttons
+            dom.addCategoryBtn.addEventListener('click', addNewCategory);
+            dom.addPublicationCategoryBtn.addEventListener('click', addNewPublicationCategory);
+            
+            // Image preview
+            dom.featuredImage.addEventListener('input', updateImagePreview);
+        }
+
+        // Show a section and hide others
+        function showSection(sectionName) {
+            appState.currentSection = sectionName;
+            
+            dom.sections.forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            document.getElementById(`${sectionName}-section`)?.classList.remove('hidden');
+            
+            // Highlight active nav link
+            dom.navLinks.forEach(link => {
+                const linkSection = link.getAttribute('href').substring(1);
+                if (linkSection === sectionName) {
+                    link.classList.add('bg-blue-50', 'text-blue-700');
+                } else {
+                    link.classList.remove('bg-blue-50', 'text-blue-700');
+                }
             });
         }
 
-        // Render publications table
-        function renderPublications() {
-            publicationsTable.innerHTML = '';
-            
-            if (publications.length === 0) {
-                publicationsTable.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                            No publications yet. Click "Add New" to create one.
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            publications.forEach(pub => {
-                const row = document.createElement('tr');
-                
-                const formattedDate = new Date(pub.date).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                });
-                
-                const categories = pub.categories ? pub.categories.join(', ') : '';
-                
-                row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${pub.id}</td>
-                    <td class="px-6 py-4 text-sm text-gray-900">
-                        <div class="font-medium">${pub.title}</div>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-500">${pub.authors || 'N/A'}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formattedDate}</td>
-                    <td class="px-6 py-4 text-sm text-gray-500">${categories}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button class="text-blue-600 hover:text-blue-900 mr-3" onclick="editPublication(${pub.id})">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button class="text-red-600 hover:text-red-900" onclick="deletePublication(${pub.id})">
-                            <i class="fas fa-trash-alt"></i> Delete
-                        </button>
-                    </td>
-                `;
-                
-                publicationsTable.appendChild(row);
-            });
-        }
-
-        // Open featured article modal for adding
-        function openFeaturedModal(article = null) {
-            const modalTitle = document.getElementById('featured-modal-title');
-            
-            if (article) {
-                modalTitle.textContent = 'Edit Featured Article';
-                document.getElementById('featured-id').value = article.id;
-                document.getElementById('featured-title').value = article.title;
-                document.getElementById('featured-journal').value = article.journal;
-                document.getElementById('featured-date').value = formatDateForInput(article.date);
-                document.getElementById('featured-volume').value = article.volume;
-                document.getElementById('featured-pages').value = article.pages;
-                document.getElementById('featured-abstract').value = article.abstract;
-                document.getElementById('featured-categories').value = article.categories.join(', ');
-                document.getElementById('featured-keywords').value = article.keywords.join(', ');
-                document.getElementById('featured-image').value = article.imageUrl;
-                document.getElementById('featured-content').value = article.fullContent;
-            } else {
-                modalTitle.textContent = 'Add New Featured Article';
-                featuredForm.reset();
-                document.getElementById('featured-id').value = '';
-                document.getElementById('featured-date').value = formatDateForInput(new Date());
-            }
-            
-            featuredModal.classList.remove('hidden');
-            contentPreview.classList.add('hidden');
-            featuredContent.classList.remove('hidden');
-            previewContentBtn.classList.remove('hidden');
-            editContentBtn.classList.add('hidden');
-        }
-
-        // Open publication modal for adding
-        function openPublicationModal(publication = null) {
-            const modalTitle = document.getElementById('publication-modal-title');
-            
-            if (publication) {
-                modalTitle.textContent = 'Edit Publication';
-                document.getElementById('publication-id').value = publication.id;
-                document.getElementById('publication-title').value = publication.title;
-                document.getElementById('publication-authors').value = publication.authors;
-                document.getElementById('publication-journal').value = publication.journal;
-                document.getElementById('publication-date').value = formatDateForInput(publication.date);
-                document.getElementById('publication-volume').value = publication.volume;
-                document.getElementById('publication-pages').value = publication.pages;
-                document.getElementById('publication-doi').value = publication.doi;
-                document.getElementById('publication-abstract').value = publication.abstract;
-                document.getElementById('publication-categories').value = publication.categories.join(', ');
-                document.getElementById('publication-keywords').value = publication.keywords.join(', ');
-                document.getElementById('publication-content').value = publication.fullContent;
-            } else {
-                modalTitle.textContent = 'Add New Publication';
-                publicationForm.reset();
-                document.getElementById('publication-id').value = '';
-                document.getElementById('publication-date').value = formatDateForInput(new Date());
-                document.getElementById('publication-journal').value = 'Islamic Insight';
-            }
-            
-            publicationModal.classList.remove('hidden');
-            pubContentPreview.classList.add('hidden');
-            publicationContent.classList.remove('hidden');
-            previewPubContentBtn.classList.remove('hidden');
-            editPubContentBtn.classList.add('hidden');
-        }
-
-        // Handle featured article form submission
-        function handleFeaturedForm(e) {
+        // Login handler
+        function handleLogin(e) {
             e.preventDefault();
             
-            const id = document.getElementById('featured-id').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const adminAccount = JSON.parse(localStorage.getItem('adminAccount'));
+                
+                if (adminAccount && adminAccount.username === username && adminAccount.password === password) {
+                    localStorage.setItem('adminLoggedIn', 'true');
+                    appState.currentUser = adminAccount.username;
+                    dom.adminUsername.textContent = adminAccount.username;
+                    if (document.getElementById('admin-username-change')) {
+                        document.getElementById('admin-username-change').value = adminAccount.username;
+                    }
+                    
+                    dom.loginScreen.classList.add('hidden');
+                    dom.mainApp.classList.remove('hidden');
+                    
+                    loadData();
+                    showSection('dashboard');
+                } else {
+                    document.getElementById('login-alert').textContent = 'Invalid username or password';
+                    document.getElementById('login-alert').classList.remove('hidden');
+                }
+            } catch (error) {
+                document.getElementById('login-alert').textContent = 'Error logging in: ' + error.message;
+                document.getElementById('login-alert').classList.remove('hidden');
+            }
+        }
+
+        // Admin setup handler
+        function handleAdminSetup(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('new-username').value;
+            const password = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (password !== confirmPassword) {
+                document.getElementById('login-alert').textContent = 'Passwords do not match';
+                document.getElementById('login-alert').classList.remove('hidden');
+                return;
+            }
+            
+            try {
+                const adminAccount = {
+                    username: username,
+                    password: password
+                };
+                
+                localStorage.setItem('adminAccount', JSON.stringify(adminAccount));
+                localStorage.setItem('adminLoggedIn', 'true');
+                
+                appState.currentUser = username;
+                dom.adminUsername.textContent = username;
+                if (document.getElementById('admin-username-change')) {
+                    document.getElementById('admin-username-change').value = username;
+                }
+                
+                dom.loginScreen.classList.add('hidden');
+                dom.mainApp.classList.remove('hidden');
+                
+                loadData();
+                showSection('dashboard');
+            } catch (error) {
+                document.getElementById('login-alert').textContent = 'Error setting up admin: ' + error.message;
+                document.getElementById('login-alert').classList.remove('hidden');
+            }
+        }
+
+        // Logout handler
+        function handleLogout() {
+            localStorage.removeItem('adminLoggedIn');
+            dom.loginScreen.classList.remove('hidden');
+            dom.mainApp.classList.add('hidden');
+            document.getElementById('login-alert').classList.add('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // Featured Articles Functions
+        
+        // Show the featured article form
+        function showFeaturedForm() {
+            clearFeaturedForm();
+            dom.featuredFormTitle.textContent = 'Add New Featured Article';
+            dom.featuredFormContainer.classList.remove('hidden');
+        }
+        
+        // Hide the featured article form
+        function hideFeaturedForm() {
+            dom.featuredFormContainer.classList.add('hidden');
+            clearFeaturedForm();
+        }
+        
+        // Clear the featured article form
+        function clearFeaturedForm() {
+            document.getElementById('featured-id').value = '';
+            document.getElementById('featured-title').value = '';
+            document.getElementById('featured-authors').value = '';
+            document.getElementById('featured-journal').value = 'Islamic Insight';
+            document.getElementById('featured-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('featured-volume').value = '';
+            document.getElementById('featured-pages').value = '';
+            document.getElementById('featured-doi').value = '';
+            document.getElementById('featured-abstract').value = '';
+            document.getElementById('featured-keywords').value = '';
+            
+            // Clear TinyMCE
+            tinymce.get('featured-content').setContent('');
+            
+            // Clear image preview
+            document.getElementById('featured-image').value = '';
+            dom.featuredImagePreview.classList.add('hidden');
+            
+            // Uncheck all categories
+            document.querySelectorAll('.category-checkbox').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // Reset editing ID
+            appState.editingFeaturedId = null;
+        }
+        
+        // Handle featured article form submission
+        function handleFeaturedSubmit(e) {
+            e.preventDefault();
+            
+            // Get form values
             const title = document.getElementById('featured-title').value;
+            const authors = document.getElementById('featured-authors').value;
             const journal = document.getElementById('featured-journal').value;
             const date = document.getElementById('featured-date').value;
             const volume = document.getElementById('featured-volume').value;
             const pages = document.getElementById('featured-pages').value;
+            const doi = document.getElementById('featured-doi').value;
             const abstract = document.getElementById('featured-abstract').value;
-            const categories = document.getElementById('featured-categories').value.split(',').map(cat => cat.trim());
-            const keywords = document.getElementById('featured-keywords').value.split(',').map(kw => kw.trim());
+            const keywords = document.getElementById('featured-keywords').value.split(',')
+                .map(keyword => keyword.trim())
+                .filter(keyword => keyword !== '');
+            const fullContent = tinymce.get('featured-content').getContent();
             const imageUrl = document.getElementById('featured-image').value;
-            const fullContent = document.getElementById('featured-content').value;
             
+            // Get selected categories
+            const categories = [];
+            document.querySelectorAll('.category-checkbox:checked').forEach(checkbox => {
+                categories.push(checkbox.value);
+            });
+            
+            // Validate required fields
+            if (!title || !date || !volume || !abstract || !fullContent || categories.length === 0) {
+                showAlert('Please fill in all required fields', 'danger');
+                return;
+            }
+            
+            // Create article object
             const article = {
                 title,
-                authors: "",
+                authors,
                 journal,
                 date,
                 volume,
                 pages,
-                doi: "",
+                doi,
                 categories,
                 abstract,
                 keywords,
-                imageUrl,
-                fullContent
+                fullContent,
+                imageUrl
             };
             
-            if (id) {
-                // Edit existing article
-                article.id = parseInt(id);
-                const index = featuredArticles.findIndex(a => a.id === parseInt(id));
+            // Check if we're editing or adding
+            if (appState.editingFeaturedId) {
+                // Update existing article
+                const index = appState.featuredArticles.findIndex(a => a.id == appState.editingFeaturedId);
                 if (index !== -1) {
-                    featuredArticles[index] = article;
-                    showToast('Featured article updated successfully!');
+                    article.id = appState.editingFeaturedId;
+                    appState.featuredArticles[index] = article;
+                    
+                    // Add to recent updates
+                    addRecentUpdate(article.title, 'Featured Article', 'Updated');
+                    
+                    showAlert('Article updated successfully!', 'success');
                 }
             } else {
                 // Add new article
-                article.id = nextId++;
-                featuredArticles.push(article);
-                showToast('New featured article added successfully!');
+                article.id = Date.now();
+                appState.featuredArticles.push(article);
+                
+                // Add to recent updates
+                addRecentUpdate(article.title, 'Featured Article', 'Added');
+                
+                showAlert('Article added successfully!', 'success');
             }
             
+            // Save and refresh
             saveData();
+            hideFeaturedForm();
             renderFeaturedArticles();
-            updateDashboardCounts();
-            featuredModal.classList.add('hidden');
         }
+        
+        // Render featured articles
+        function renderFeaturedArticles() {
+            const searchTerm = dom.featuredSearch.value.toLowerCase();
+            const filterCategory = dom.featuredFilter.value;
+            
+            // Filter articles based on search and category filter
+            let filteredArticles = appState.featuredArticles.filter(article => {
+                const matchesSearch = article.title.toLowerCase().includes(searchTerm) || 
+                                     (article.abstract && article.abstract.toLowerCase().includes(searchTerm));
+                
+                const matchesCategory = !filterCategory || (article.categories && article.categories.includes(filterCategory));
+                
+                return matchesSearch && matchesCategory;
+            });
+            
+            // Sort by date (newest first)
+            filteredArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            // Update count display
+            dom.featuredCountDisplay.textContent = `Showing ${filteredArticles.length} of ${appState.featuredArticles.length} articles`;
+            
+            // Pagination
+            const totalPages = Math.ceil(filteredArticles.length / appState.itemsPerPage);
+            if (appState.currentFeaturedPage > totalPages && totalPages > 0) {
+                appState.currentFeaturedPage = totalPages;
+            } else if (totalPages === 0) {
+                appState.currentFeaturedPage = 1;
+            }
+            
+            const startIndex = (appState.currentFeaturedPage - 1) * appState.itemsPerPage;
+            const paginatedArticles = filteredArticles.slice(startIndex, startIndex + appState.itemsPerPage);
+            
+            // Render articles
+            if (paginatedArticles.length === 0) {
+                dom.featuredArticlesList.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-gray-500">No articles found</td>
+                    </tr>
+                `;
+            } else {
+                dom.featuredArticlesList.innerHTML = paginatedArticles.map(article => `
+                    <tr>
+                        <td class="py-3">${article.title}</td>
+                        <td>${formatDate(article.date)}</td>
+                        <td>${article.volume || '-'}</td>
+                        <td>
+                            ${(article.categories || []).map(category => 
+                                `<span class="badge badge-blue">${category}</span>`
+                            ).join('')}
+                        </td>
+                        <td>
+                            <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="editFeaturedArticle(${article.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-800" onclick="deleteFeaturedArticle(${article.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+            
+            // Render pagination
+            renderPagination(dom.featuredPagination, totalPages, appState.currentFeaturedPage, 'changeFeaturedPage');
+        }
+        
+        // Change featured article page
+        window.changeFeaturedPage = function(page) {
+            appState.currentFeaturedPage = page;
+            renderFeaturedArticles();
+        };
+        
+        // Edit featured article
+        window.editFeaturedArticle = function(id) {
+            const article = appState.featuredArticles.find(a => a.id == id);
+            if (!article) return;
+            
+            appState.editingFeaturedId = id;
+            
+            document.getElementById('featured-id').value = article.id;
+            document.getElementById('featured-title').value = article.title || '';
+            document.getElementById('featured-authors').value = article.authors || '';
+            document.getElementById('featured-journal').value = article.journal || 'Islamic Insight';
+            document.getElementById('featured-date').value = article.date || '';
+            document.getElementById('featured-volume').value = article.volume || '';
+            document.getElementById('featured-pages').value = article.pages || '';
+            document.getElementById('featured-doi').value = article.doi || '';
+            document.getElementById('featured-abstract').value = article.abstract || '';
+            document.getElementById('featured-keywords').value = (article.keywords || []).join(', ');
+            
+            // Set TinyMCE content
+            tinymce.get('featured-content').setContent(article.fullContent || '');
+            
+            // Set image URL and show preview if exists
+            document.getElementById('featured-image').value = article.imageUrl || '';
+            updateImagePreview();
+            
+            // Check appropriate categories
+            document.querySelectorAll('.category-checkbox').forEach(checkbox => {
+                checkbox.checked = article.categories && article.categories.includes(checkbox.value);
+            });
+            
+            dom.featuredFormTitle.textContent = 'Edit Featured Article';
+            dom.featuredFormContainer.classList.remove('hidden');
+            
+            // Scroll to form
+            dom.featuredFormContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+        
+        // Delete featured article
+        window.deleteFeaturedArticle = function(id) {
+            showConfirmationModal(
+                'Delete Article',
+                'Are you sure you want to delete this article? This action cannot be undone.',
+                function() {
+                    const index = appState.featuredArticles.findIndex(a => a.id == id);
+                    if (index !== -1) {
+                        const article = appState.featuredArticles[index];
+                        appState.featuredArticles.splice(index, 1);
+                        
+                        // Add to recent updates
+                        addRecentUpdate(article.title, 'Featured Article', 'Deleted');
+                        
+                        saveData();
+                        renderFeaturedArticles();
+                        updateCounts();
+                        showAlert('Article deleted successfully', 'success');
+                    }
+                }
+            );
+        };
 
+        // Publications Functions
+        
+        // Show the publication form
+        function showPublicationForm() {
+            clearPublicationForm();
+            dom.publicationFormTitle.textContent = 'Add New Publication';
+            dom.publicationFormContainer.classList.remove('hidden');
+        }
+        
+        // Hide the publication form
+        function hidePublicationForm() {
+            dom.publicationFormContainer.classList.add('hidden');
+            clearPublicationForm();
+        }
+        
+        // Clear the publication form
+        function clearPublicationForm() {
+            document.getElementById('publication-id').value = '';
+            document.getElementById('publication-title').value = '';
+            document.getElementById('publication-authors').value = '';
+            document.getElementById('publication-journal').value = 'Islamic Insight';
+            document.getElementById('publication-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('publication-volume').value = '';
+            document.getElementById('publication-pages').value = '';
+            document.getElementById('publication-doi').value = '';
+            document.getElementById('publication-abstract').value = '';
+            document.getElementById('publication-keywords').value = '';
+            
+            // Clear TinyMCE
+            tinymce.get('publication-content').setContent('');
+            
+            // Uncheck all categories
+            document.querySelectorAll('.publication-category-checkbox').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // Reset editing ID
+            appState.editingPublicationId = null;
+        }
+        
         // Handle publication form submission
-        function handlePublicationForm(e) {
+        function handlePublicationSubmit(e) {
             e.preventDefault();
             
-            const id = document.getElementById('publication-id').value;
+            // Get form values
             const title = document.getElementById('publication-title').value;
             const authors = document.getElementById('publication-authors').value;
             const journal = document.getElementById('publication-journal').value;
@@ -1137,10 +1522,24 @@
             const pages = document.getElementById('publication-pages').value;
             const doi = document.getElementById('publication-doi').value;
             const abstract = document.getElementById('publication-abstract').value;
-            const categories = document.getElementById('publication-categories').value.split(',').map(cat => cat.trim());
-            const keywords = document.getElementById('publication-keywords').value.split(',').map(kw => kw.trim());
-            const fullContent = document.getElementById('publication-content').value;
+            const keywords = document.getElementById('publication-keywords').value.split(',')
+                .map(keyword => keyword.trim())
+                .filter(keyword => keyword !== '');
+            const fullContent = tinymce.get('publication-content').getContent();
             
+            // Get selected categories
+            const categories = [];
+            document.querySelectorAll('.publication-category-checkbox:checked').forEach(checkbox => {
+                categories.push(checkbox.value);
+            });
+            
+            // Validate required fields
+            if (!title || !date || !abstract || !fullContent || categories.length === 0) {
+                showAlert('Please fill in all required fields', 'danger');
+                return;
+            }
+            
+            // Create publication object
             const publication = {
                 title,
                 authors,
@@ -1155,430 +1554,597 @@
                 fullContent
             };
             
-            if (id) {
-                // Edit existing publication
-                publication.id = parseInt(id);
-                const index = publications.findIndex(p => p.id === parseInt(id));
+            // Check if we're editing or adding
+            if (appState.editingPublicationId) {
+                // Update existing publication
+                const index = appState.publications.findIndex(p => p.id == appState.editingPublicationId);
                 if (index !== -1) {
-                    publications[index] = publication;
-                    showToast('Publication updated successfully!');
+                    publication.id = appState.editingPublicationId;
+                    appState.publications[index] = publication;
+                    
+                    // Add to recent updates
+                    addRecentUpdate(publication.title, 'Publication', 'Updated');
+                    
+                    showAlert('Publication updated successfully!', 'success');
                 }
             } else {
                 // Add new publication
-                publication.id = nextId++;
-                publications.push(publication);
-                showToast('New publication added successfully!');
+                publication.id = Date.now();
+                appState.publications.push(publication);
+                
+                // Add to recent updates
+                addRecentUpdate(publication.title, 'Publication', 'Added');
+                
+                showAlert('Publication added successfully!', 'success');
             }
             
+            // Save and refresh
             saveData();
+            hidePublicationForm();
             renderPublications();
-            updateDashboardCounts();
-            publicationModal.classList.add('hidden');
         }
-
-        // Edit featured article
-        function editFeaturedArticle(id) {
-            const article = featuredArticles.find(a => a.id === id);
-            if (article) {
-                openFeaturedModal(article);
+        
+        // Render publications
+        function renderPublications() {
+            const searchTerm = dom.publicationSearch.value.toLowerCase();
+            const filterCategory = dom.publicationFilter.value;
+            
+            // Filter publications based on search and category filter
+            let filteredPublications = appState.publications.filter(publication => {
+                const matchesSearch = publication.title.toLowerCase().includes(searchTerm) || 
+                                     (publication.abstract && publication.abstract.toLowerCase().includes(searchTerm));
+                
+                const matchesCategory = !filterCategory || (publication.categories && publication.categories.includes(filterCategory));
+                
+                return matchesSearch && matchesCategory;
+            });
+            
+            // Sort by date (newest first)
+            filteredPublications.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            // Update count display
+            dom.publicationsCountDisplay.textContent = `Showing ${filteredPublications.length} of ${appState.publications.length} publications`;
+            
+            // Pagination
+            const totalPages = Math.ceil(filteredPublications.length / appState.itemsPerPage);
+            if (appState.currentPublicationPage > totalPages && totalPages > 0) {
+                appState.currentPublicationPage = totalPages;
+            } else if (totalPages === 0) {
+                appState.currentPublicationPage = 1;
             }
+            
+            const startIndex = (appState.currentPublicationPage - 1) * appState.itemsPerPage;
+            const paginatedPublications = filteredPublications.slice(startIndex, startIndex + appState.itemsPerPage);
+            
+            // Render publications
+            if (paginatedPublications.length === 0) {
+                dom.publicationsList.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center py-4 text-gray-500">No publications found</td>
+                    </tr>
+                `;
+            } else {
+                dom.publicationsList.innerHTML = paginatedPublications.map(publication => `
+                    <tr>
+                        <td class="py-3">${publication.title}</td>
+                        <td>${formatDate(publication.date)}</td>
+                        <td>
+                            ${(publication.categories || []).map(category => 
+                                `<span class="badge badge-blue">${category}</span>`
+                            ).join('')}
+                        </td>
+                        <td>
+                            <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="editPublication(${publication.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-800" onclick="deletePublication(${publication.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+            
+            // Render pagination
+            renderPagination(dom.publicationsPagination, totalPages, appState.currentPublicationPage, 'changePublicationPage');
         }
-
+        
+        // Change publication page
+        window.changePublicationPage = function(page) {
+            appState.currentPublicationPage = page;
+            renderPublications();
+        };
+        
         // Edit publication
-        function editPublication(id) {
-            const publication = publications.find(p => p.id === id);
-            if (publication) {
-                openPublicationModal(publication);
-            }
-        }
-
-        // Delete featured article
-        function deleteFeaturedArticle(id) {
-            const article = featuredArticles.find(a => a.id === id);
-            if (article) {
-                itemToDelete = { type: 'featured', id };
-                deleteMessage.textContent = `Are you sure you want to delete the featured article "${article.title}"? This action cannot be undone.`;
-                deleteModal.classList.remove('hidden');
-            }
-        }
-
+        window.editPublication = function(id) {
+            const publication = appState.publications.find(p => p.id == id);
+            if (!publication) return;
+            
+            appState.editingPublicationId = id;
+            
+            document.getElementById('publication-id').value = publication.id;
+            document.getElementById('publication-title').value = publication.title || '';
+            document.getElementById('publication-authors').value = publication.authors || '';
+            document.getElementById('publication-journal').value = publication.journal || 'Islamic Insight';
+            document.getElementById('publication-date').value = publication.date || '';
+            document.getElementById('publication-volume').value = publication.volume || '';
+            document.getElementById('publication-pages').value = publication.pages || '';
+            document.getElementById('publication-doi').value = publication.doi || '';
+            document.getElementById('publication-abstract').value = publication.abstract || '';
+            document.getElementById('publication-keywords').value = (publication.keywords || []).join(', ');
+            
+            // Set TinyMCE content
+            tinymce.get('publication-content').setContent(publication.fullContent || '');
+            
+            // Check appropriate categories
+            document.querySelectorAll('.publication-category-checkbox').forEach(checkbox => {
+                checkbox.checked = publication.categories && publication.categories.includes(checkbox.value);
+            });
+            
+            dom.publicationFormTitle.textContent = 'Edit Publication';
+            dom.publicationFormContainer.classList.remove('hidden');
+            
+            // Scroll to form
+            dom.publicationFormContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+        
         // Delete publication
-        function deletePublication(id) {
-            const publication = publications.find(p => p.id === id);
-            if (publication) {
-                itemToDelete = { type: 'publication', id };
-                deleteMessage.textContent = `Are you sure you want to delete the publication "${publication.title}"? This action cannot be undone.`;
-                deleteModal.classList.remove('hidden');
-            }
-        }
-
-        // Confirm delete item
-        function confirmDeleteItem() {
-            if (!itemToDelete) return;
-            
-            if (itemToDelete.type === 'featured') {
-                featuredArticles = featuredArticles.filter(a => a.id !== itemToDelete.id);
-                renderFeaturedArticles();
-                showToast('Featured article deleted successfully!');
-            } else if (itemToDelete.type === 'publication') {
-                publications = publications.filter(p => p.id !== itemToDelete.id);
-                renderPublications();
-                showToast('Publication deleted successfully!');
-            }
-            
-            updateDashboardCounts();
-            saveData();
-            deleteModal.classList.add('hidden');
-            itemToDelete = null;
-        }
-
-        // Update dashboard counts
-        function updateDashboardCounts() {
-            document.getElementById('featured-count').textContent = featuredArticles.length;
-            document.getElementById('publications-count').textContent = publications.length;
-            document.getElementById('total-content').textContent = featuredArticles.length + publications.length;
-            
-            // Update recent updates
-            const recentUpdates = document.getElementById('recent-updates');
-            const allItems = [
-                ...featuredArticles.map(item => ({ ...item, type: 'Featured' })),
-                ...publications.map(item => ({ ...item, type: 'Publication' }))
-            ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
-            
-            if (allItems.length === 0) {
-                recentUpdates.innerHTML = `
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" colspan="4">
-                            No recent updates
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            recentUpdates.innerHTML = allItems.map(item => {
-                const formattedDate = new Date(item.date).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                });
-                
-                return `
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">${item.title}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.type}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formattedDate}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                Published
-                            </span>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        // Show toast notification
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toast-message');
-            
-            toastMessage.textContent = message;
-            toast.className = `toast ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white`;
-            toast.classList.remove('hidden');
-            
-            // Hide after 3 seconds
-            setTimeout(() => {
-                toast.style.animation = 'fadeOut 0.5s';
-                setTimeout(() => {
-                    toast.classList.add('hidden');
-                    toast.style.animation = '';
-                }, 500);
-            }, 3000);
-        }
-
-        // Format date for input element
-        function formatDateForInput(date) {
-            if (!date) return '';
-            
-            const d = new Date(date);
-            const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            
-            return `${year}-${month}-${day}`;
-        }
-
-        // Render preview
-        function renderPreview() {
-            const previewData = {
-                featuredArticles,
-                publications
-            };
-            
-            const previewHtml = generatePreviewHtml(previewData);
-            previewFrame.srcdoc = previewHtml;
-        }
-
-        // Generate preview HTML
-        function generatePreviewHtml(data) {
-            return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Islamic Insight - Preview</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        
-        .academic-title {
-            font-family: 'Crimson Text', serif;
-        }
-        
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-right: 0.5rem;
-            margin-bottom: 0.25rem;
-        }
-        
-        .badge-blue { background: #ebf8ff; color: #2b6cb0; }
-        .badge-green { background: #f0fff4; color: #2f855a; }
-        .badge-red { background: #fff5f5; color: #c53030; }
-        .badge-purple { background: #faf5ff; color: #6b46c1; }
-        .badge-yellow { background: #fffaf0; color: #b7791f; }
-        
-        .article-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        .article-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        
-        .article-image {
-            height: 200px;
-            background-size: cover;
-            background-position: center;
-            border-radius: 8px 8px 0 0;
-        }
-    </style>
-</head>
-<body class="bg-gray-50">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <h1 class="text-xl font-bold text-black-900 academic-title">
-                            ISLAMIC INSIGHT
-                        </h1>
-                    </div>
-                </div>
-                
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-8">
-                        <a href="#" class="text-gray-700 hover:text-blue-900 px-3 py-2 text-sm font-medium transition-colors">Home</a>
-                        <a href="#" class="text-gray-700 hover:text-blue-900 px-3 py-2 text-sm font-medium transition-colors">All Issues</a>
-                        <a href="#" class="text-gray-700 hover:text-blue-900 px-3 py-2 text-sm font-medium transition-colors">Contact</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Header -->
-    <header class="bg-gradient-to-br from-blue-900 to-blue-800 text-white py-16 sm:py-20 lg:py-24">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
-                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold academic-title mb-6">
-                    Islamic Insight Journal
-                </h2>
-                <p class="text-lg sm:text-xl lg:text-2xl mb-8 max-w-3xl mx-auto">
-                    International, peer-reviewed cross-disciplinary journal
-                </p>
-                
-                <div class="max-w-md mx-auto">
-                    <div class="relative">
-                        <input
-                            type="text"
-                            placeholder="Search articles, authors, keywords..."
-                            class="w-full px-4 py-3 pl-10 pr-4 text-gray-900 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center">
-                            <i class="fas fa-search text-gray-400"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-    
-    <!-- Featured Articles -->
-    <section id="featured" class="py-12 sm:py-16 lg:py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold academic-title text-gray-900 mb-4">
-                    All Issues
-                </h2>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-                ${data.featuredArticles.map(article => `
-                    <div class="article-card bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                        <div class="article-image" style="background-image: url('${article.imageUrl}');"></div>
-                        <div class="p-6">
-                            <div class="mb-4">
-                                ${article.categories.map((category, index) => 
-                                    `<span class="badge badge-${['blue', 'green', 'red', 'purple', 'yellow'][index % 5]}">${category}</span>`
-                                ).join('')}
-                            </div>
-                            <h3 class="text-xl font-semibold academic-title text-gray-900 mb-3 line-clamp-2">
-                                ${article.title}
-                            </h3>
-                            <p class="text-sm text-gray-600 mb-3">
-                                <i class="far fa-calendar-alt"></i> ${new Date(article.date).toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'short',
-                                    day: 'numeric'
-                                })}
-                            </p>
-                            <p class="text-gray-700 mb-4 line-clamp-3">
-                                ${article.abstract}
-                            </p>
-                            <div class="flex flex-wrap gap-1 mb-4">
-                                ${article.keywords.slice(0, 3).map(keyword => 
-                                    `<span class="text-xs bg-gray-100 text-gray-600 rounded-full px-2 py-1">${keyword}</span>`
-                                ).join('')}
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <button class="text-blue-900 hover:text-blue-700 font-medium transition-colors">
-                                    Read More <i class="fas fa-arrow-right ml-1"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
-                <h3 class="text-lg font-semibold academic-title mb-2">Islamic Insight</h3>
-                <p class="text-gray-400 text-sm mb-4">
-                    International, peer-reviewed cross-disciplinary journal
-                </p>
-                <p class="text-gray-500 text-xs">
-                    © 2025 Islamic Insight. All rights reserved.
-                </p>
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
-            `;
-        }
-
-        // Export data to JSON file
-        function exportData() {
-            const data = {
-                featuredArticles,
-                publications,
-                nextId
-            };
-            
-            const jsonString = JSON.stringify(data, null, 2);
-            const blob = new Blob([jsonString], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `islamic-insight-data-${new Date().toISOString().slice(0, 10)}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showToast('Data exported successfully!');
-        }
-
-        // Import data from JSON file
-        function importData() {
-            const fileInput = document.getElementById('import-data-file');
-            const file = fileInput.files[0];
-            
-            if (!file) {
-                showToast('Please select a file to import.', 'error');
-                return;
-            }
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    
-                    if (data.featuredArticles && Array.isArray(data.featuredArticles) &&
-                        data.publications && Array.isArray(data.publications) &&
-                        data.nextId) {
+        window.deletePublication = function(id) {
+            showConfirmationModal(
+                'Delete Publication',
+                'Are you sure you want to delete this publication? This action cannot be undone.',
+                function() {
+                    const index = appState.publications.findIndex(p => p.id == id);
+                    if (index !== -1) {
+                        const publication = appState.publications[index];
+                        appState.publications.splice(index, 1);
                         
-                        featuredArticles = data.featuredArticles;
-                        publications = data.publications;
-                        nextId = data.nextId;
+                        // Add to recent updates
+                        addRecentUpdate(publication.title, 'Publication', 'Deleted');
                         
                         saveData();
-                        renderFeaturedArticles();
                         renderPublications();
-                        updateDashboardCounts();
-                        
-                        showToast('Data imported successfully!');
-                        fileInput.value = '';
-                    } else {
-                        showToast('Invalid data format in the imported file.', 'error');
+                        updateCounts();
+                        showAlert('Publication deleted successfully', 'success');
                     }
-                } catch (error) {
-                    console.error('Error importing data:', error);
-                    showToast('Error importing data. Please check the file format.', 'error');
                 }
-            };
-            
-            reader.readAsText(file);
-        }
+            );
+        };
 
-        // Confirm reset data
-        function confirmResetData() {
-            if (confirm('Are you sure you want to reset all data? This action cannot be undone.')) {
-                localStorage.removeItem('featuredArticles');
-                localStorage.removeItem('publications');
-                localStorage.removeItem('nextId');
+        // Admin settings submit handler
+        function handleAdminSettingsSubmit(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('admin-username-change').value;
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-admin-password').value;
+            
+            try {
+                const adminAccount = JSON.parse(localStorage.getItem('adminAccount'));
                 
-                loadData();
-                renderFeaturedArticles();
-                renderPublications();
-                updateDashboardCounts();
+                if (!adminAccount) {
+                    showAlert('Admin account not found', 'danger');
+                    return;
+                }
                 
-                showToast('All data has been reset to initial state.');
+                // Update username
+                if (username !== adminAccount.username) {
+                    adminAccount.username = username;
+                    dom.adminUsername.textContent = username;
+                }
+                
+                // Update password if provided
+                if (currentPassword && newPassword) {
+                    if (currentPassword !== adminAccount.password) {
+                        showAlert('Current password is incorrect', 'danger');
+                        return;
+                    }
+                    
+                    adminAccount.password = newPassword;
+                }
+                
+                // Save changes
+                localStorage.setItem('adminAccount', JSON.stringify(adminAccount));
+                showAlert('Settings updated successfully', 'success');
+                
+                // Clear password fields
+                document.getElementById('current-password').value = '';
+                document.getElementById('new-admin-password').value = '';
+            } catch (error) {
+                showAlert('Error updating settings: ' + error.message, 'danger');
             }
         }
 
-        // Global functions needed for event handlers
+        // Reset all data
+        function resetAllData() {
+            try {
+                localStorage.removeItem('featuredArticles');
+                localStorage.removeItem('publications');
+                localStorage.removeItem('recentUpdates');
+                
+                // Reinitialize with default data
+                appState.featuredArticles = [];
+                appState.publications = [];
+                appState.recentUpdates = [];
+                
+                initializeDefaultData();
+                
+                updateCounts();
+                renderFeaturedArticles();
+                renderPublications();
+                renderRecentUpdates();
+                
+                showAlert('All data has been reset', 'success');
+                hideConfirmationModal();
+            } catch (error) {
+                showAlert('Error resetting data: ' + error.message, 'danger');
+            }
+        }
+
+        // Export data
+        function exportData() {
+            try {
+                const exportFeatured = document.getElementById('export-featured').checked;
+                const exportPublications = document.getElementById('export-publications').checked;
+                
+                let dataToExport = {
+                    exportDate: new Date().toISOString()
+                };
+                
+                if (exportFeatured) {
+                    dataToExport.featuredArticles = appState.featuredArticles;
+                }
+                
+                if (exportPublications) {
+                    dataToExport.publications = appState.publications;
+                }
+                
+                const dataStr = JSON.stringify(dataToExport, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                
+                const exportFileDefaultName = 'islamic_insight_data_' + new Date().toISOString().split('T')[0] + '.json';
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+                
+                showAlert('Data exported successfully', 'success');
+            } catch (error) {
+                showAlert('Error exporting data: ' + error.message, 'danger');
+            }
+        }
+
+        // Import data
+        function importData() {
+            try {
+                const fileInput = document.getElementById('import-file');
+                const replaceExisting = document.getElementById('replace-existing').checked;
+                
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    showAlert('Please select a file to import', 'danger');
+                    return;
+                }
+                
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        
+                        if (importedData.featuredArticles) {
+                            if (replaceExisting) {
+                                appState.featuredArticles = importedData.featuredArticles;
+                            } else {
+                                // Merge with existing data
+                                const existingIds = new Set(appState.featuredArticles.map(a => a.id));
+                                importedData.featuredArticles.forEach(article => {
+                                    if (!existingIds.has(article.id)) {
+                                        appState.featuredArticles.push(article);
+                                    }
+                                });
+                            }
+                        }
+                        
+                        if (importedData.publications) {
+                            if (replaceExisting) {
+                                appState.publications = importedData.publications;
+                            } else {
+                                // Merge with existing data
+                                const existingIds = new Set(appState.publications.map(p => p.id));
+                                importedData.publications.forEach(publication => {
+                                    if (!existingIds.has(publication.id)) {
+                                        appState.publications.push(publication);
+                                    }
+                                });
+                            }
+                        }
+                        
+                        // Save and refresh
+                        saveData();
+                        updateCounts();
+                        renderFeaturedArticles();
+                        renderPublications();
+                        
+                        // Add to recent updates
+                        addRecentUpdate('Data Import', 'System', 'Completed');
+                        
+                        // Reset file input
+                        fileInput.value = '';
+                        
+                        showAlert('Data imported successfully', 'success');
+                    } catch (parseError) {
+                        showAlert('Error parsing imported file: ' + parseError.message, 'danger');
+                    }
+                };
+                
+                reader.readAsText(file);
+            } catch (error) {
+                showAlert('Error importing data: ' + error.message, 'danger');
+            }
+        }
+
+        // Add a new category for featured articles
+        function addNewCategory() {
+            const newCategory = document.getElementById('new-category').value.trim();
+            
+            if (!newCategory) {
+                return;
+            }
+            
+            // Check if category already exists
+            let exists = false;
+            document.querySelectorAll('.category-checkbox').forEach(checkbox => {
+                if (checkbox.value === newCategory) {
+                    exists = true;
+                    checkbox.checked = true; // Select the existing category
+                }
+            });
+            
+            if (!exists) {
+                // Create new category checkbox
+                const container = document.getElementById('category-options');
+                const label = document.createElement('label');
+                label.className = 'inline-flex items-center';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'category-checkbox';
+                checkbox.value = newCategory;
+                checkbox.checked = true;
+                
+                const span = document.createElement('span');
+                span.className = 'ml-2';
+                span.textContent = newCategory;
+                
+                label.appendChild(checkbox);
+                label.appendChild(span);
+                container.appendChild(label);
+            }
+            
+            // Clear input
+            document.getElementById('new-category').value = '';
+        }
+
+        // Add a new category for publications
+        function addNewPublicationCategory() {
+            const newCategory = document.getElementById('new-publication-category').value.trim();
+            
+            if (!newCategory) {
+                return;
+            }
+            
+            // Check if category already exists
+            let exists = false;
+            document.querySelectorAll('.publication-category-checkbox').forEach(checkbox => {
+                if (checkbox.value === newCategory) {
+                    exists = true;
+                    checkbox.checked = true; // Select the existing category
+                }
+            });
+            
+            if (!exists) {
+                // Create new category checkbox
+                const container = document.getElementById('publication-category-options');
+                const label = document.createElement('label');
+                label.className = 'inline-flex items-center';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'publication-category-checkbox';
+                checkbox.value = newCategory;
+                checkbox.checked = true;
+                
+                const span = document.createElement('span');
+                span.className = 'ml-2';
+                span.textContent = newCategory;
+                
+                label.appendChild(checkbox);
+                label.appendChild(span);
+                container.appendChild(label);
+            }
+            
+            // Clear input
+            document.getElementById('new-publication-category').value = '';
+        }
+
+        // Update image preview
+        function updateImagePreview() {
+            const imageUrl = document.getElementById('featured-image').value;
+            
+            if (imageUrl) {
+                dom.featuredImagePreview.src = imageUrl;
+                dom.featuredImagePreview.classList.remove('hidden');
+                
+                // Handle image load error
+                dom.featuredImagePreview.onerror = function() {
+                    dom.featuredImagePreview.classList.add('hidden');
+                };
+            } else {
+                dom.featuredImagePreview.classList.add('hidden');
+            }
+        }
+
+        // Utility Functions
+        
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('featuredArticles', JSON.stringify(appState.featuredArticles));
+            localStorage.setItem('publications', JSON.stringify(appState.publications));
+            localStorage.setItem('recentUpdates', JSON.stringify(appState.recentUpdates));
+            updateCounts();
+        }
+        
+        // Update counts
+        function updateCounts() {
+            dom.featuredCount.textContent = appState.featuredArticles.length;
+            dom.publicationsCount.textContent = appState.publications.length;
+            dom.totalCount.textContent = appState.featuredArticles.length + appState.publications.length;
+        }
+        
+        // Format date
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+        
+        // Show alert message
+        function showAlert(message, type) {
+            dom.alertMessage.innerHTML = `
+                <div class="alert ${type === 'danger' ? 'alert-danger' : 'alert-success'}">
+                    ${message}
+                </div>
+            `;
+            dom.alertMessage.classList.remove('hidden');
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                dom.alertMessage.classList.add('hidden');
+            }, 5000);
+        }
+        
+        // Render pagination
+        function renderPagination(container, totalPages, currentPage, changePageFn) {
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            
+            // Previous button
+            html += `
+                <li>
+                    <a href="#" onclick="${changePageFn}(${currentPage > 1 ? currentPage - 1 : 1}); return false;" 
+                       class="${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+            `;
+            
+            // Page numbers
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                html += `
+                    <li>
+                        <a href="#" onclick="${changePageFn}(${i}); return false;" 
+                           class="${i === currentPage ? 'active' : ''}">
+                            ${i}
+                        </a>
+                    </li>
+                `;
+            }
+            
+            // Next button
+            html += `
+                <li>
+                    <a href="#" onclick="${changePageFn}(${currentPage < totalPages ? currentPage + 1 : totalPages}); return false;" 
+                       class="${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            `;
+            
+            container.innerHTML = html;
+        }
+        
+        // Show confirmation modal
+        function showConfirmationModal(title, message, confirmCallback) {
+            dom.confirmTitle.textContent = title;
+            dom.confirmMessage.textContent = message;
+            
+            // Set confirm button action
+            dom.confirmOk.onclick = function() {
+                confirmCallback();
+                hideConfirmationModal();
+            };
+            
+            dom.confirmModal.classList.remove('hidden');
+        }
+        
+        // Hide confirmation modal
+        function hideConfirmationModal() {
+            dom.confirmModal.classList.add('hidden');
+        }
+        
+        // Add a recent update
+        function addRecentUpdate(title, type, action) {
+            const update = {
+                title: title,
+                type: type,
+                action: action,
+                date: new Date().toISOString()
+            };
+            
+            appState.recentUpdates.unshift(update);
+            
+            // Keep only the latest 10 updates
+            if (appState.recentUpdates.length > 10) {
+                appState.recentUpdates = appState.recentUpdates.slice(0, 10);
+            }
+            
+            saveData();
+            renderRecentUpdates();
+        }
+        
+        // Render recent updates
+        function renderRecentUpdates() {
+            if (appState.recentUpdates.length === 0) {
+                dom.recentUpdates.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="text-center py-4 text-gray-500">No recent updates</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            dom.recentUpdates.innerHTML = appState.recentUpdates.map(update => `
+                <tr>
+                    <td class="py-2">${update.title.length > 40 ? update.title.substring(0, 40) + '...' : update.title}</td>
+                    <td>${update.type}</td>
+                    <td>
+                        <span class="text-xs text-gray-500">${formatDate(update.date)} - ${update.action}</span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Make functions available globally for inline event handlers
         window.editFeaturedArticle = editFeaturedArticle;
-        window.editPublication = editPublication;
         window.deleteFeaturedArticle = deleteFeaturedArticle;
+        window.editPublication = editPublication;
         window.deletePublication = deletePublication;
+        window.changeFeaturedPage = changeFeaturedPage;
+        window.changePublicationPage = changePublicationPage;
     </script>
 </body>
 </html>
