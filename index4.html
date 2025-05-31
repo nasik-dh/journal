@@ -658,7 +658,7 @@
                         ${article.title}
                     </h3>
                     <p class="text-sm text-gray-600 mb-3">
-                        ${article.authors} • ${article.date}
+                        <i class="far fa-calendar-alt"></i> ${article.date}
                     </p>
                     <p class="text-gray-700 mb-4 line-clamp-3">
                         ${article.abstract}
@@ -702,7 +702,7 @@
                         ${article.title}
                     </h3>
                     <p class="text-sm text-gray-600 mb-3">
-                        ${article.authors} • ${article.date}
+                         <i class="far fa-calendar-alt"></i> ${article.date}
                     </p>
                     <p class="text-gray-700 mb-4 line-clamp-3">
                         ${article.abstract}
@@ -758,7 +758,9 @@
             });
 
             // Contact form
-            contactForm.addEventListener('submit', handleContactForm);
+            if (contactForm) {
+                contactForm.addEventListener('submit', handleContactForm);
+            }
 
             // Smooth scrolling for navigation links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -843,24 +845,16 @@
                     </h1>
                     <div class="text-gray-600 mb-4">
                         <p class="font-medium">${article.authors}</p>
-                        <p class="text-sm">${article.journal}, ${article.volume}, ${article.pages} (${article.date})</p>
-                        <p class="text-sm">DOI: ${article.doi}</p>
+                        <p class="text-sm">${article.journal}, ${article.volume}, ${article.pages} <i class="far fa-calendar-alt"></i> ${article.date}</p>
+                        
                     </div>
                     <div class="flex flex-wrap gap-2 mb-6">
                         ${article.keywords.map(keyword => `<span class="text-xs bg-gray-100 text-gray-600 rounded-full px-2 py-1">${keyword}</span>`).join('')}
                     </div>
-                    <div class="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500">
-                        <h3 class="font-semibold text-blue-900 mb-2">Date</h3>
-                        <p class="text-sm text-blue-800">${article.authors.split(',')[0]} . (${article.date}). ${article.title}. <em>${article.journal}</em>, ${article.volume}, ${article.pages}. ${article.doi}</p>
-                    </div>
+                    
                     <div class="mb-6">
                         
-                        <button 
-                            onclick="shareArticle(${article.id})" 
-                            class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
-                        >
-                            <i class="fas fa-share mr-2"></i>Share
-                        </button>
+                        
                     </div>
                 </div>
                 <div class="article-content prose max-w-none">
